@@ -1,0 +1,86 @@
+:root {
+    --primary-color: #8c7851;
+    --secondary-color: #716040;
+
+    --background-color: #fffffe;
+    --section-color: #eaddcf;
+    --text-color: #020826;
+
+    --accent-color: #c89b3c;
+
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+}
+
+/* Reset */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color) !important;
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+/* Section */
+.container {
+    margin-top: 20px;
+}
+
+/* Card Produk */
+.card {
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Tombol */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Accent button */
+.btn-accent {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-accent:hover {
+    opacity: 0.9;
+}
+
+/* Footer */
+footer {
+    background-color: var(--section-color);
+    padding: 15px;
+    text-align: center;
+    margin-top: 40px;
+}
