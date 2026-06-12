@@ -1,0 +1,60 @@
+ source /home/inope/Django_Project/Inope_store/venv/bin/activate
+# Django
+*.pyc
+__pycache__/
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+static/
+
+# Environment
+venv/
+env/
+.env
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Database
+*.sqlite3
+*.db
+
+# Secret keys
+.env
+config.py
+secrets.py
+
+# Logs
+*.log
+
+# Coverage
+.coverage
+htmlcov/
+
+# Django migrations
+**/migrations/0*.py
+!**/migrations/__init__.py
+
+# Media files
+media/
+
+# Static files
+staticfiles/
