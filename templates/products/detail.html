@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ produtu.naran }} - Inope Store{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6">
+                {% if produtu.imagem %}
+                    <img class="card-img-top mb-5 mb-md-0" src="{{ produtu.imagem.url }}" alt="{{ produtu.naran }}" />
+                {% else %}
+                    <img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}" />
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <div class="small mb-1">
+                    {% if produtu.kategoria %}
+                        {{ produtu.kategoria.naran }}
+                    {% endif %}
+                </div>
+                <h1 class="display-5 fw-bolder">{{ produtu.naran }}</h1>
+                <div class="fs-3 mb-3">${{ produtu.preco }}</div>
+                <p class="lead">{{ produtu.deskrisaun|default:"No description available." }}</p>
+                <div class="d-flex">
+                    {% if produtu.stok > 0 %}
+                        <span class="text-success me-3">In stock ({{ produtu.stok }})</span>
+                    {% else %}
+                        <span class="text-danger me-3">Out of stock</span>
+                    {% endif %}
+                    <a class="btn btn-outline-dark flex-shrink-0" href="#">Add to cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

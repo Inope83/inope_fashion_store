@@ -3,11 +3,11 @@ from .models import Kategoria, Produtu
 
 @admin.register(Kategoria)
 class KategoriaAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
+    list_display = ('naran',)
+    search_fields = ('naran',)
 
 @admin.register(Produtu)
 class ProdutuAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'stock', 'kategoria')
+    list_display = ('naran', 'preco', 'stok', 'kategoria')
     list_filter = ('kategoria',)
-    search_fields = ('name', 'description')
+    search_fields = ('naran', 'deskrisaun')

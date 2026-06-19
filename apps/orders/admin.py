@@ -7,12 +7,12 @@ class DetalloPediduInline(admin.TabularInline):
 
 @admin.register(Pedidu)
 class PediduAdmin(admin.ModelAdmin):
-    list_display = ('id', 'kliente', 'status', 'total', 'created_at')
-    list_filter = ('status', 'created_at')
-    search_fields = ('kliente__name',)
+    list_display = ('id', 'kliente', 'estado', 'total', 'created_at')
+    list_filter = ('estado', 'created_at')
+    search_fields = ('kliente__naran',)
     inlines = [DetalloPediduInline]
 
 @admin.register(Pagamentu)
 class PagamentuAdmin(admin.ModelAdmin):
-    list_display = ('pedidu', 'method', 'total', 'status', 'created_at')
-    list_filter = ('status', 'method')
+    list_display = ('pedidu', 'metodu', 'total', 'estado', 'created_at')
+    list_filter = ('estado', 'metodu')

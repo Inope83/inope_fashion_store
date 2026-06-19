@@ -1,8 +1,17 @@
 from django.db import models
 
+
 class Pedidu(models.Model):
-    status = models.CharField(max_length=50)
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('konfirmadu', 'Konfirmadu'),
+        ('envia', 'Envia'),
+        ('entrega', 'Entrega'),
+        ('kansela', 'Kansela'),
+    ]
+    estado = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pendente')
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    endeereco_entrega = models.TextField(default='')
     created_at = models.DateTimeField(auto_now_add=True)
     kliente = models.ForeignKey(
         'users.Kliente',
@@ -11,14 +20,14 @@ class Pedidu(models.Model):
     )
 
     def __str__(self):
-        return f"Order {self.id} - {self.kliente.name}"
+        return f"Order {self.id} - {self.kliente.naran}"
 
     class Meta:
         verbose_name_plural = "Pedidus"
 
 
 class DetalloPedidu(models.Model):
-    quantity = models.IntegerField()
+    kantidade = models.IntegerField()
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     pedidu = models.ForeignKey(
         Pedidu,
@@ -32,16 +41,26 @@ class DetalloPedidu(models.Model):
     )
 
     def __str__(self):
-        return f"{self.quantity}x {self.produtu.name} (Order {self.pedidu.id})"
+        return f"{self.kantidade}x {self.produtu.naran} (Order {self.pedidu.id})"
 
     class Meta:
         verbose_name_plural = "Detallo Pedidus"
 
 
 class Pagamentu(models.Model):
-    method = models.CharField(max_length=50)
+    METHOD_CHOICES = [
+        ('cod', 'COD (Selu Bainhira Simu)'),
+        ('transfer', 'Transferensia Bankaria'),
+        ('mbway', 'MBWAY'),
+    ]
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('pagu', 'Pagu'),
+        ('falha', 'Falha'),
+    ]
+    metodu = models.CharField(max_length=50, choices=METHOD_CHOICES)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=50)
+    estado = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pendente')
     created_at = models.DateTimeField(auto_now_add=True)
     pedidu = models.OneToOneField(
         Pedidu,
@@ -50,7 +69,7 @@ class Pagamentu(models.Model):
     )
 
     def __str__(self):
-        return f"Payment for Order {self.pedidu.id} - {self.status}"
+        return f"Payment for Order {self.pedidu.id} - {self.estado}"
 
     class Meta:
         verbose_name_plural = "Pagamentus"
