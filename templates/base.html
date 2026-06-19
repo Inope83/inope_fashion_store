@@ -1,59 +1,25 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>{% block title %}Inope Store{% endblock %}</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{% block title %}Shop Homepage - Start Bootstrap Template{% endblock %}</title>
+        <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    </head>
+    <body>
+        {% include 'partials/navbar.html' %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-<body>
+        {% block content %}
+        {% endblock %}
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="{% url 'home' %}">Inope Store</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Kategoria</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Produtu</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            {% for kategoria in nav_kategorias %}
-                                <li><a class="dropdown-item" href="#">{{ kategoria.naran }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
+        {% include 'partials/footer.html' %}
 
-                <div class="d-flex align-items-center gap-2">
-                    <a class="btn btn-outline-dark" href="#">
-                        <i class="bi-cart-fill me-1"></i>Cart
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">{{ cart_count|default:0 }}</span>
-                    </a>
-                    <a class="btn btn-outline-dark" href="#">Login</a>
-                    <a class="btn btn-dark" href="#">Register</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    {% block content %}{% endblock %}
-
-    <!-- Footer -->
-    <footer class="py-5 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">Inope Store &copy; {% now "Y" %} — Selu COD (Cash On Delivery)</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'js/scripts.js' %}"></script>
+    </body>
 </html>
