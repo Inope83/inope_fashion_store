@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field.errors }}
+                {% if field.field.widget.input_type == 'checkbox' %}
+                    <div class="form-check">{{ field }} <label class="form-check-label">{{ field.label }}</label></div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Rai</button>
+                <a href="{{ cancel_url }}" class="btn btn-secondary">Kansela</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
