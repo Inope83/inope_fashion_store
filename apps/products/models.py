@@ -34,8 +34,31 @@ class Produtu(models.Model):
     def check_stock(self):
         return self.stok > 0
 
+    def get_featured_image(self):
+        # Returns the image marked as feature, or the first one, or None
+        feature_image = self.images.filter(is_feature=True).first()
+        if feature_image:
+            return feature_image
+        return self.images.first()
+
     def __str__(self):
         return self.naran
 
     class Meta:
         verbose_name_plural = "Produtus"
+
+
+class ProdutuImage(models.Model):
+    produtu = models.ForeignKey(
+        Produtu,
+        on_delete=models.CASCADE,
+        related_name='images'
+    )
+    image = models.ImageField(upload_to='products/gallery/')
+    is_feature = models.BooleanField(
+        default=False,
+        help_text="Set as main thumbnail for the product"
+    )
+
+    def __str__(self):
+        return f"Image for {self.produtu.name}"
