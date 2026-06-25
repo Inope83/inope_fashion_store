@@ -28,7 +28,11 @@
                             <li><a class="dropdown-item" href="{% url 'produtu_list' %}"><i class="bi-grid me-2"></i>Produtus</a></li>
                             <li><hr class="dropdown-divider" /></li>
                             {% for kategoria in nav_kategorias %}
+<<<<<<< Updated upstream
                                 <li><a class="dropdown-item" href="{% url 'produtu_list' %}?kategoria={{ kategoria.id }}">{{ kategoria.naran }}</a></li>
+=======
+                                <li><a class="dropdown-item" href="#">{{ kategoria.name }}</a></li>
+>>>>>>> Stashed changes
                             {% endfor %}
                         </ul>
                     </li>
