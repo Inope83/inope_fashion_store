@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Produtus - Inope Store{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="sidebar-filter">
+                    <h5><i class="bi-funnel me-2"></i>Kategoria</h5>
+                    <div class="list-group">
+                        <a href="{% url 'produtu_list' %}"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if not request.GET.kategoria %}active{% endif %}">
+                            Hotu
+                            <span class="badge bg-secondary rounded-pill">{{ kategorias|length }}</span>
+                        </a>
+                        {% for kat in kategorias %}
+                            <a href="{% url 'produtu_list' %}?kategoria={{ kat.id }}"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if request.GET.kategoria|stringformat:'s' == kat.id|stringformat:'s' %}active{% endif %}">
+                                {{ kat.naran }}
+                                <span class="badge bg-secondary rounded-pill">{{ kat.produtus.count }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="section-title mb-0"><span>Produtus</span></h2>
+                    <span class="text-muted small">{{ produtus|length }} produtu{{ produtus|pluralize }}</span>
+                </div>
+                <div class="row g-4">
+                    {% for produtu in produtus %}
+                        <div class="col-sm-6 col-xl-4 fade-in">
+                            <div class="product-card">
+                                <div class="card-img-wrapper">
+                                    {% if produtu.stok <= 0 %}
+                                        <span class="badge-out-of-stock">Out of Stock</span>
+                                    {% endif %}
+                                    {% if produtu.imagem %}
+                                        <img src="{{ produtu.imagem.url }}" alt="{{ produtu.naran }}">
+                                    {% else %}
+                                        <img src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}">
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <div class="product-name">{{ produtu.naran }}</div>
+                                    {% if produtu.kategoria %}
+                                        <div class="product-category">{{ produtu.kategoria.naran }}</div>
+                                    {% endif %}
+                                    <div class="product-price">${{ produtu.preco }}</div>
+                                </div>
+                                <div class="card-footer">
+                                    <a class="btn-view" href="{% url 'produtu_detail' produtu.id %}">
+                                        <i class="bi-eye me-1"></i>View product
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <i class="bi-search"></i>
+                                <h4>No products found</h4>
+                                <p>Try selecting a different category or check back later.</p>
+                                <a href="{% url 'produtu_list' %}" class="btn-primary-store">
+                                    <i class="bi-grid"></i>View All Products
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

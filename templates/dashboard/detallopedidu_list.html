@@ -1,0 +1,34 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Detallu Pedidu{% endblock %}
+{% block page_title %}Detallu Pedidu{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">Lista Detallu</h3>
+        <a href="{% url 'detallopedidu_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Foun</a>
+    </div>
+    <div class="card-body table-responsive p-0">
+        <table class="table table-hover">
+            <thead><tr><th>ID</th><th>Pedidu</th><th>Produtu</th><th>Kantidade</th><th>Subtotal</th><th>Aksaun</th></tr></thead>
+            <tbody>
+                {% for obj in object_list %}
+                <tr>
+                    <td>{{ obj.id }}</td>
+                    <td>#{{ obj.pedidu.id }}</td>
+                    <td>{{ obj.produtu.naran }}</td>
+                    <td>{{ obj.kantidade }}</td>
+                    <td>${{ obj.subtotal }}</td>
+                    <td>
+                        <a href="{% url 'detallopedidu_update' obj.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'detallopedidu_delete' obj.pk %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center">Laiha detallu</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

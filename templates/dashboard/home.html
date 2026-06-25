@@ -1,0 +1,84 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <a href="{% url 'produtu_list' %}" class="small-box-link">
+            <div class="small-box text-bg-primary">
+                <div class="inner">
+                    <h3>{{ total_produtu }}</h3>
+                    <p>Produtu</p>
+                </div>
+                <div class="icon"><i class="fas fa-box fa-2x"></i></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-6">
+        <a href="{% url 'pedidu_list' %}" class="small-box-link">
+            <div class="small-box text-bg-success">
+                <div class="inner">
+                    <h3>{{ total_pedidu }}</h3>
+                    <p>Pedidu</p>
+                </div>
+                <div class="icon"><i class="fas fa-shopping-cart fa-2x"></i></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-6">
+        <a href="{% url 'kliente_list' %}" class="small-box-link">
+            <div class="small-box text-bg-warning">
+                <div class="inner">
+                    <h3>{{ total_kliente }}</h3>
+                    <p>Kliente</p>
+                </div>
+                <div class="icon"><i class="fas fa-users fa-2x"></i></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-6">
+        <a href="{% url 'pagamentu_list' %}" class="small-box-link">
+            <div class="small-box text-bg-info">
+                <div class="inner">
+                    <h3>${{ total_receita|floatformat:2 }}</h3>
+                    <p>Receita</p>
+                </div>
+                <div class="icon"><i class="fas fa-dollar-sign fa-2x"></i></div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Pedidu Resente</h3>
+    </div>
+    <div class="card-body table-responsive p-0">
+        <table class="table table-hover text-nowrap">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Kliente</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedidu in object_list %}
+                <tr>
+                    <td>{{ pedidu.id }}</td>
+                    <td>{{ pedidu.kliente.naran }}</td>
+                    <td>${{ pedidu.total|floatformat:2 }}</td>
+                    <td><span class="badge bg-{% if pedidu.estado == 'entrega' %}success{% elif pedidu.estado == 'kansela' %}danger{% else %}warning{% endif %}">{{ pedidu.estado|title }}</span></td>
+                    <td>{{ pedidu.created_at|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center">Laiha pedidu</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

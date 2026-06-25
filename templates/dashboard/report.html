@@ -1,0 +1,25 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Relatoriu{% endblock %}
+{% block page_title %}Relatoriu{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Informasaun</h3></div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">Total Kliente</dt>
+                    <dd class="col-sm-6">{{ total_kliente }}</dd>
+                    <dt class="col-sm-6">Total Produtu</dt>
+                    <dd class="col-sm-6">{{ total_produtu }}</dd>
+                    <dt class="col-sm-6">Total Pedidu</dt>
+                    <dd class="col-sm-6">{{ total_pedidu }}</dd>
+                    <dt class="col-sm-6">Total Receita</dt>
+                    <dd class="col-sm-6">${{ total_receita|floatformat:2 }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

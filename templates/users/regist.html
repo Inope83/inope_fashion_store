@@ -1,0 +1,38 @@
+{% extends 'base_auth.html' %}
+{% block title %}Registu | Inope Store{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100" style="min-height: 90vh;">
+        <div class="col-md-5 col-lg-4">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <i class="bi-person-plus"></i>
+                    <h3>Kria Akun</h3>
+                    <p>Preenxe dadus atu registu</p>
+                </div>
+                <div class="auth-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi-person me-1"></i>Naran</label>
+                            <input type="text" name="naran" class="form-control" placeholder="Ita nia naran" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi-envelope me-1"></i>Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="ita@exemplo.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi-lock me-1"></i>Password</label>
+                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn-accent w-100 justify-content-center py-2 mt-2">Registu</button>
+                    </form>
+                </div>
+                <div class="auth-footer">
+                    Iha ona akun? <a href="{% url 'login' %}">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

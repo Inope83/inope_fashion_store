@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Historia Pedidu - Inope Store{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <h2 class="section-title mb-4">Historia <span>Pedidu</span></h2>
+
+        {% if pedidus %}
+            <div class="row g-4">
+                {% for pedidu in pedidus %}
+                    <div class="col-12 fade-in">
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <strong>Pedidu #{{ pedidu.id }}</strong>
+                                    <span class="text-muted ms-2 small">{{ pedidu.created_at|date:"d/m/Y H:i" }}</span>
+                                </div>
+                                <span class="order-status {{ pedidu.estado }}">{{ pedidu.get_estado_display }}</span>
+                            </div>
+                            <div class="order-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <span class="text-muted small">Total</span>
+                                        <div class="fw-bold" style="font-size:1.2rem;">${{ pedidu.total }}</div>
+                                    </div>
+                                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                                        <a href="{% url 'order_detail' pedidu.id %}" class="btn-primary-store">
+                                            <i class="bi-eye"></i>Detallu
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="bi-box-seam"></i>
+                <h4>Ita seidauk iha pedidu</h4>
+                <p>Sosa produtu agora atu hahu ita nia historia pedidu.</p>
+                <a href="{% url 'home' %}" class="btn-primary-store">
+                    <i class="bi-bag-check"></i>Sosa Agora
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

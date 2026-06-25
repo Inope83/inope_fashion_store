@@ -4,21 +4,26 @@
 
 {% block content %}
 
-<!-- Header -->
-<header class="bg-dark py-5">
-    <div class="container px-4 px-lg-5 my-5">
-        <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">Sasan diak ho prese ho'ot</h1>
-            <p class="lead fw-normal text-white-50 mb-0">Compra online, simu iha uma — selu kuandu simu (COD)</p>
-        </div>
+<header class="hero-section">
+    <div class="container px-4 px-lg-5 my-5 text-center">
+        <h1 class="display-4 fw-bolder text-white">Sasan diak ho presu baratu</h1>
+        <p class="lead fw-normal text-white-50 mb-4">Compra online, simu iha uma — selu kuandu simu (COD)</p>
+        <a href="{% url 'produtu_list' %}" class="btn-accent btn-lg">
+            <i class="bi-bag-check"></i>Sosa Agora
+        </a>
     </div>
 </header>
 
-<!-- Product grid -->
 <section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+    <div class="container px-4 px-lg-5">
+        <div class="d-flex align-items-center justify-content-between mb-5">
+            <h2 class="section-title mb-0">Produtu <span>Resente</span></h2>
+            <a href="{% url 'produtu_list' %}" class="btn-outline-store">
+                View All <i class="bi-arrow-right"></i>
+            </a>
+        </div>
 
+        <div class="row g-4">
             {% for produtu in featured %}
             <div class="col mb-5">
                 <div class="card h-100">
@@ -26,33 +31,38 @@
                         <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Out of stock</div>
                     {% endif %}
 
-                    {% if produtu.get_featured_image %}
-                        <img class="card-img-top" src="{{ produtu.get_featured_image.image.url }}" alt="{{ produtu.name}}" />
+                    {% if produtu.imagem %}
+                        <img class="card-img-top" src="{{ produtu.imagem.url }}" alt="{{ produtu.naran }}" />
                     {% else %}
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ produtu.name}}" />
+                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}" />
                     {% endif %}
 
                     <div class="card-body p-4">
                         <div class="text-center">
-                            <h5 class="fw-bolder">{{ produtu.name}}</h5>
-                            <p class="mb-1">${{ produtu.price }}</p>
+                            <h5 class="fw-bolder">{{ produtu.naran }}</h5>
+                            <p class="mb-1">${{ produtu.preco }}</p>
                             {% if produtu.kategoria %}
-                                <small class="text-muted">{{ produtu.kategoria.name}}</small>
+                                <small class="text-muted">{{ produtu.kategoria.naran }}</small>
                             {% endif %}
                         </div>
                     </div>
 
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                         <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" href="#">View product</a>
+                            <a class="btn btn-outline-dark mt-auto" href="{% url 'produtu_detail' produtu.id %}">View product</a>
                         </div>
                     </div>
                 </div>
             </div>
             {% empty %}
-                <p class="text-center">No products yet.</p>
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi-box-seam"></i>
+                    <h4>No products yet</h4>
+                    <p>Products will appear here once added by the admin.</p>
+                </div>
+            </div>
             {% endfor %}
-
         </div>
     </div>
 </section>

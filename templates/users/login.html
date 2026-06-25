@@ -1,0 +1,46 @@
+{% extends 'base_auth.html' %}
+{% load socialaccount %}
+{% block title %}Login | Inope Store{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100" style="min-height: 90vh;">
+        <div class="col-md-5 col-lg-4">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <i class="bi-shop"></i>
+                    <h3>Welcome Back</h3>
+                    <p>Halo Login atu kontinua</p>
+                </div>
+                <div class="auth-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi-envelope me-1"></i>Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="ita@exemplo.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi-lock me-1"></i>Password</label>
+                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn-accent w-100 justify-content-center py-2 mt-2">Login</button>
+                    </form>
+
+                    <div class="auth-divider">ou login ho</div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% provider_login_url 'google' %}" class="btn-outline-store justify-content-center">
+                            <i class="bi-google me-2"></i>Google
+                        </a>
+                        <a href="{% provider_login_url 'facebook' %}" class="btn-outline-store justify-content-center">
+                            <i class="bi-facebook me-2"></i>Facebook
+                        </a>
+                    </div>
+                </div>
+                <div class="auth-footer">
+                    Seidauk iha akun? <a href="{% url 'regist' %}">Registu</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

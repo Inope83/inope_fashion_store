@@ -1,12 +1,19 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('', views.home_view, name='home'),
+    path('products/', include('apps.products.urls')),
+    path('users/', include('apps.users.urls')),
+    path('cart/', include('apps.cart.urls')),
+    path('orders/', include('apps.orders.urls')),
+    path('dashboard/', include('apps.dashboard.urls')),
+
 ]
 
 if settings.DEBUG:
