@@ -23,6 +23,13 @@ class Produtu(models.Model):
         on_delete=models.CASCADE,
         related_name='produtus'
     )
+    admin = models.ForeignKey(
+        'users.Admin',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='produtus'
+    )
 
     def check_stock(self):
         return self.stok > 0

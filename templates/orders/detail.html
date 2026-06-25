@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Detallu Pedidu #{{ pedidu.id }} - Inope Store{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'order_history' %}" class="text-decoration-none">Historia Pedidu</a></li>
+                <li class="breadcrumb-item active">Pedidu #{{ pedidu.id }}</li>
+            </ol>
+        </nav>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="cart-summary">
+                    <h5 class="mb-3"><i class="bi-receipt me-2"></i>Detallu Pedidu #{{ pedidu.id }}</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produtu</th>
+                                    <th>Kantidade</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detallu in pedidu.detallos.all %}
+                                    <tr>
+                                        <td>{{ detallu.produtu.naran }}</td>
+                                        <td>{{ detallu.kantidade }}</td>
+                                        <td class="fw-bold">${{ detallu.subtotal }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td colspan="3" class="text-muted">No items</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h5 class="mb-3"><i class="bi-info-circle me-2"></i>Informasaun Pedidu</h5>
+                    <hr>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 text-muted small">Status</dt>
+                        <dd class="col-sm-7"><span class="order-status {{ pedidu.estado }}">{{ pedidu.get_estado_display }}</span></dd>
+                        <dt class="col-sm-5 text-muted small">Total</dt>
+                        <dd class="col-sm-7 fw-bold">${{ pedidu.total }}</dd>
+                        <dt class="col-sm-5 text-muted small">Data</dt>
+                        <dd class="col-sm-7">{{ pedidu.created_at|date:"d/m/Y H:i" }}</dd>
+                        <dt class="col-sm-5 text-muted small">Endereco</dt>
+                        <dd class="col-sm-7">{{ pedidu.endeereco_entrega }}</dd>
+                    </dl>
+                    <hr>
+                    <a href="{% url 'order_history' %}" class="btn-outline-store w-100 justify-content-center">
+                        <i class="bi-arrow-left"></i>Fila ba Historia
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

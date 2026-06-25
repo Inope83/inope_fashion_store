@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifikasaun - Inope Store{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <h2 class="section-title mb-4"><span>Notifikasaun</span></h2>
+
+        {% if notifikasauns %}
+            {% for notif in notifikasauns %}
+                <div class="notification-item d-flex justify-content-between align-items-start">
+                    <div>
+                        <small class="notif-time"><i class="bi-clock me-1"></i>{{ notif.created_at|date:"d/m/Y H:i" }}</small>
+                        <p class="notif-message">{{ notif.mensajen }}</p>
+                    </div>
+                    <span class="notif-badge">{{ notif.tipu }}</span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="bi-bell-slash"></i>
+                <h4>Seidauk iha notifikasaun</h4>
+                <p>Ita sei simu notifikasaun bainhira iha atualizasaun kona-ba ita nia pedidu.</p>
+                <a href="{% url 'perfil' %}" class="btn-outline-store">
+                    <i class="bi-person"></i>Fila ba Perfil
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -18,6 +18,13 @@ class Pedidu(models.Model):
         on_delete=models.CASCADE,
         related_name='pedidus'
     )
+    admin = models.ForeignKey(
+        'users.Admin',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='pedidus'
+    )
 
     def __str__(self):
         return f"Order {self.id} - {self.kliente.naran}"
@@ -56,7 +63,7 @@ class Pagamentu(models.Model):
     STATUS_CHOICES = [
         ('pendente', 'Pendente'),
         ('pagu', 'Pagu'),
-        ('falha', 'Falha'),
+        ('kansela', 'Kansela'),
     ]
     metodu = models.CharField(max_length=50, choices=METHOD_CHOICES)
     total = models.DecimalField(max_digits=10, decimal_places=2)
@@ -66,6 +73,13 @@ class Pagamentu(models.Model):
         Pedidu,
         on_delete=models.CASCADE,
         related_name='pagamentu'
+    )
+    admin = models.ForeignKey(
+        'users.Admin',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='pagamentus'
     )
 
     def __str__(self):

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Kareta - Inope Store{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <h2 class="section-title mb-4">Kareta <span>Sasan</span></h2>
+
+        {% if items %}
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="cart-table">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Produtu</th>
+                                    <th>Kantidade</th>
+                                    <th>Subtotal</th>
+                                    <th class="text-end">Aksaun</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td data-label="Produtu">
+                                            <div class="d-flex align-items-center gap-3">
+                                                {% if item.produtu.imagem %}
+                                                    <img src="{{ item.produtu.imagem.url }}" alt="{{ item.produtu.naran }}" width="50" height="50" style="object-fit:cover; border-radius:0.5rem;">
+                                                {% endif %}
+                                                <div>
+                                                    <div class="fw-semibold">{{ item.produtu.naran }}</div>
+                                                    <small class="text-muted">${{ item.produtu.preco }} each</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Kantidade">{{ item.kantidade }}</td>
+                                        <td data-label="Subtotal" class="fw-bold">${{ item.subtotal }}</td>
+                                        <td data-label="Aksaun" class="text-end">
+                                            <a href="{% url 'cart_remove' item.produtu.id %}" class="btn-danger-store btn-sm">
+                                                <i class="bi-trash"></i>Hamos
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="cart-summary">
+                        <h5 class="mb-3">Resumu Pedidu</h5>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Total Item</span>
+                            <span>{{ items|length }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Subtotal</span>
+                            <span>${{ total }}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <strong style="font-size:1.1rem;">Total</strong>
+                            <strong style="font-size:1.1rem;color:var(--accent);">${{ total }}</strong>
+                        </div>
+                        <a href="{% url 'checkout' %}" class="btn-accent w-100 mb-2 justify-content-center">
+                            <i class="bi-box-arrow-right"></i>Checkout
+                        </a>
+                        <a href="{% url 'home' %}" class="btn-outline-store w-100 justify-content-center">
+                            <i class="bi-arrow-left"></i>Continua Sosa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="bi-cart-x"></i>
+                <h4>Kareta mamuk</h4>
+                <p>Ita seidauk tau sasan iha kareta. Sosa agora atu hahu.</p>
+                <a href="{% url 'home' %}" class="btn-primary-store">
+                    <i class="bi-bag-check"></i>Sosa Agora
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

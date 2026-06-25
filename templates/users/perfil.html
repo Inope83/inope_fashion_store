@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil - Inope Store{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5">
+        <h2 class="section-title mb-4"><span>Perfil</span> Kliente</h2>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="profile-card text-center">
+                    <div class="profile-avatar mx-auto">
+                        {{ kliente.naran|first|upper }}
+                    </div>
+                    <h4 class="fw-bold mb-1">{{ kliente.naran }}</h4>
+                    <p class="text-muted small mb-0">{{ kliente.email }}</p>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="profile-card">
+                    <dl class="row mb-0 profile-info">
+                        <dt class="col-sm-4">Naran</dt>
+                        <dd class="col-sm-8">{{ kliente.naran }}</dd>
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">{{ kliente.email }}</dd>
+                        {% if kliente.last_login %}
+                            <dt class="col-sm-4">Ultimu Login</dt>
+                            <dd class="col-sm-8">{{ kliente.last_login|date:"d/m/Y H:i" }}</dd>
+                        {% endif %}
+                    </dl>
+                    <div class="profile-actions">
+                        <a href="{% url 'order_history' %}" class="btn-outline-store">
+                            <i class="bi-box-seam"></i>Historia Pedidu
+                        </a>
+                        <a href="{% url 'notifikasaun_list' %}" class="btn-outline-store">
+                            <i class="bi-bell"></i>Notifikasaun
+                        </a>
+                        <a href="{% url 'logout' %}" class="btn-danger-store">
+                            <i class="bi-box-arrow-right"></i>Sai
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
