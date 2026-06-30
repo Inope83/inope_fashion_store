@@ -14,10 +14,15 @@ class Kategoria(models.Model):
 
 
 class Produtu(models.Model):
+    SIZE_CHOICES = [
+        ('XS', 'XS'), ('S', 'S'), ('M', 'M'),
+        ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'),
+    ]
     naran = models.CharField('Naran', max_length=255)
     deskrisaun = models.TextField('Deskrisaun', blank=True, null=True)
     presu = models.DecimalField('Presu', max_digits=10, decimal_places=2)
     estok = models.IntegerField('Estok', default=0)
+    tamanho = models.CharField('Tamanho', max_length=5, choices=SIZE_CHOICES, blank=True)
     kategoria = models.ForeignKey(
         Kategoria,
         on_delete=models.CASCADE,

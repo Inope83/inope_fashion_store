@@ -1,7 +1,9 @@
 from django.db import models
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.utils import timezone
 from apps.products.models import Produtu
+from apps.users.models import Notifikasaun
 from .models import Pedidu, DetalloPedidu, Pagamentu
 from .forms import CheckoutForm
 
@@ -50,6 +52,13 @@ def checkout_view(request):
                 metodu='cod',
                 total=total,
                 status='pendente',
+            )
+
+            Notifikasaun.objects.create(
+                kliente_id=kliente_id,
+                mensajen=f'Ita nia pedidu #{pedidu.id} ho total ${total:.2f} simu ona. Ita bele monitoriza iha História Pedidu.',
+                tipu='order_confirm',
+                pedidu=pedidu,
             )
 
             request.session['cart'] = []

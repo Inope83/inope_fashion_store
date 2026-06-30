@@ -98,8 +98,14 @@ class DashboardProdutuForm(forms.ModelForm):
     image = forms.ImageField(
         required=False,
         widget=forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
-        help_text='PNG, JPG, JPEG. Tama 2MB.',
+        help_text='PNG, JPG, JPEG. Tama 1MB.',
     )
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image and image.size > 1 * 1024 * 1024:
+            raise forms.ValidationError('Imajen boot liu. Tama máximu 1MB.')
+        return image
     image_clear = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
@@ -108,12 +114,13 @@ class DashboardProdutuForm(forms.ModelForm):
 
     class Meta:
         model = Produtu
-        fields = ['naran', 'deskrisaun', 'presu', 'estok', 'kategoria']
+        fields = ['naran', 'deskrisaun', 'presu', 'estok', 'tamanho', 'kategoria']
         widgets = {
             'naran': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Naran produtu'}),
             'deskrisaun': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Deskrisaun produtu', 'rows': 3}),
             'presu': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00', 'step': '0.01'}),
             'estok': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0'}),
+            'tamanho': forms.Select(attrs={'class': 'form-control'}),
             'kategoria': forms.Select(attrs={'class': 'form-control'}),
         }
 

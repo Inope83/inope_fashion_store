@@ -25,6 +25,7 @@
                         <th>Imajen</th>
                         <th>Naran</th>
                         <th>Kategoria</th>
+                        <th>Tamanho</th>
                         <th>Presu</th>
                         <th>Estok</th>
                         <th class="text-end">Aksaun</th>
@@ -45,6 +46,7 @@
                         </td>
                         <td class="fw-semibold">{{ obj.naran }}</td>
                         <td><span class="badge bg-info">{{ obj.kategoria.naran }}</span></td>
+                        <td><span class="badge bg-secondary">{{ obj.tamanho|default:'-' }}</span></td>
                         <td class="fw-semibold">${{ obj.presu }}</td>
                         <td>
                             {% if obj.estok > 10 %}
@@ -64,7 +66,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center py-5">
+                        <td colspan="8" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="fas fa-box-open fa-3x mb-3 d-block"></i>
                                 <p class="mb-0">Laiha produtu</p>

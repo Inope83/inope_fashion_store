@@ -26,8 +26,19 @@
             <div class="col-lg-9">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="section-title mb-0"><span>Produtus</span></h2>
-                    <form method="get" class="d-flex gap-2" style="max-width:300px;">
+                    <form method="get" class="d-flex gap-2 flex-wrap" style="max-width:600px;">
                         {% if request.GET.kategoria %}<input type="hidden" name="kategoria" value="{{ request.GET.kategoria }}">{% endif %}
+                        <input type="number" name="presu_min" class="form-control form-control-sm" placeholder="Presu min" value="{{ presu_min }}" style="max-width:100px;">
+                        <input type="number" name="presu_max" class="form-control form-control-sm" placeholder="Presu max" value="{{ presu_max }}" style="max-width:100px;">
+                        <select name="tamanho" class="form-select form-select-sm" style="max-width:90px;">
+                            <option value="">Tamanho</option>
+                            <option value="XS" {% if tamanho == 'XS' %}selected{% endif %}>XS</option>
+                            <option value="S" {% if tamanho == 'S' %}selected{% endif %}>S</option>
+                            <option value="M" {% if tamanho == 'M' %}selected{% endif %}>M</option>
+                            <option value="L" {% if tamanho == 'L' %}selected{% endif %}>L</option>
+                            <option value="XL" {% if tamanho == 'XL' %}selected{% endif %}>XL</option>
+                            <option value="XXL" {% if tamanho == 'XXL' %}selected{% endif %}>XXL</option>
+                        </select>
                         <div class="input-group">
                             <input type="text" name="q" class="form-control" placeholder="Buka produtu..." value="{{ q }}" style="border-radius:0.5rem 0 0 0.5rem;">
                             <button class="btn-accent" type="submit" style="border-radius:0 0.5rem 0.5rem 0;padding:0.5rem 1rem;"><i class="bi-search"></i></button>
