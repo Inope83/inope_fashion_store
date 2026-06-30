@@ -18,6 +18,7 @@ class Kliente(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     last_login = models.DateTimeField(null=True, blank=True)
+    is_staff = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.password and not self.password.startswith('pbkdf2_'):

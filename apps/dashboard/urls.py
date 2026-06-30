@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.DashboardHome.as_view(), name='dashboard_home'),
-    path('report/', views.DashboardHome.as_view(template_name='dashboard/report.html'), name='dashboard_report'),
+    path('report/', views.ReportView.as_view(), name='dashboard_report'),
+    path('report/export/csv/', views.report_export_csv, name='dashboard_report_export'),
 
     # Kategoria
     path('kategoria/', views.KategoriaList.as_view(), name='kategoria_list'),

@@ -106,8 +106,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 SOCIALACCOUNT_LOGIN_ON_GET = True
-<<<<<<< Updated upstream:config/settings/base.py
-
-=======
->>>>>>> Stashed changes:config/settings.py
 SOCIALACCOUNT_PROVIDERS = {}

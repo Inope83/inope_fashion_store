@@ -1,14 +1,28 @@
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.db.models import Sum
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
+from django.db.models import Sum, Count, Q
+from django.db.models.functions import TruncDate
+from django.contrib import messages
+from django.http import HttpResponse
 from apps.products.models import Produtu, Kategoria
 from apps.orders.models import Pedidu, DetalloPedidu, Pagamentu
 from apps.users.models import Kliente, Notifikasaun
 from apps.users.models import Admin
 
 
-class DashboardMixin:
+class AdminRequiredMixin:
+    def dispatch(self, request, *args, **kwargs):
+        kliente_id = request.session.get('kliente_id')
+        if not kliente_id:
+            return redirect(f"{reverse('login')}?next={request.path}")
+        if not Kliente.objects.filter(id=kliente_id, is_staff=True).exists():
+            return redirect(f"{reverse('login')}?next={request.path}")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class DashboardMixin(AdminRequiredMixin):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['active'] = self.active_page
@@ -17,7 +31,7 @@ class DashboardMixin:
         return ctx
 
 
-class DashboardHome(ListView):
+class DashboardHome(AdminRequiredMixin, ListView):
     template_name = 'dashboard/home.html'
     context_object_name = 'recent_pedidus'
     queryset = Pedidu.objects.select_related('kliente').order_by('-created_at')[:5]
@@ -380,3 +394,81 @@ class AdminDelete(DashboardMixin, DeleteView):
     page_title = 'Hamos Admin'
     cancel_url = reverse_lazy('admin_list')
     success_url = reverse_lazy('admin_list')
+
+
+# ─── Report ───
+
+class ReportView(AdminRequiredMixin, View):
+    template_name = 'dashboard/report.html'
+
+    def get(self, request):
+        start_date = request.GET.get('start')
+        end_date = request.GET.get('end')
+
+        pedidus = Pedidu.objects.all()
+        pagamentus = Pagamentu.objects.filter(estado='pagu')
+
+        if start_date:
+            pedidus = pedidus.filter(created_at__gte=start_date)
+            pagamentus = pagamentus.filter(created_at__gte=start_date)
+        if end_date:
+            pedidus = pedidus.filter(created_at__lte=end_date)
+            pagamentus = pagamentus.filter(created_at__lte=end_date)
+
+        ctx = {
+            'total_kliente': Kliente.objects.count(),
+            'total_produtu': Produtu.objects.count(),
+            'total_pedidu': pedidus.count(),
+            'total_receita': pagamentus.aggregate(Sum('total'))['total__sum'] or 0,
+
+            'pedidu_estadu': {
+                s: pedidus.filter(estado=s).count()
+                for s, _ in Pedidu.STATUS_CHOICES
+            },
+            'pagamentu_estadu': {
+                s: Pagamentu.objects.filter(estado=s).count()
+                for s, _ in Pagamentu.STATUS_CHOICES
+            },
+
+            'receita_diaria': list(
+                pagamentus.annotate(dia=TruncDate('created_at'))
+                .values('dia').annotate(total=Sum('total'))
+                .order_by('dia')
+            ),
+            'produtu_toni': list(
+                DetalloPedidu.objects.values('produtu__naran')
+                .annotate(total=Sum('kantidade'))
+                .order_by('-total')[:5]
+            ),
+
+            'start_date': start_date,
+            'end_date': end_date,
+        }
+        return render(request, self.template_name, ctx)
+
+
+def report_export_csv(request):
+    import csv
+    start_date = request.GET.get('start')
+    end_date = request.GET.get('end')
+
+    pagamentus = Pagamentu.objects.filter(estado='pagu').select_related('pedidu__kliente')
+    if start_date:
+        pagamentus = pagamentus.filter(created_at__gte=start_date)
+    if end_date:
+        pagamentus = pagamentus.filter(created_at__lte=end_date)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="relatoriu_inope.csv"'
+    w = csv.writer(response)
+    w.writerow(['Data', 'Pedidu', 'Kliente', 'Metodu', 'Total'])
+    for p in pagamentus:
+        w.writerow([p.created_at.strftime('%d/%m/%Y'),
+                    p.pedidu.id,
+                    p.pedidu.kliente.naran,
+                    p.metodu,
+                    p.total])
+    return response
+
+
+# ─── Dashboard Auth ───
