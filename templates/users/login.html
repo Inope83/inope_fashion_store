@@ -1,6 +1,5 @@
 {% extends 'base_auth.html' %}
-{% load socialaccount %}
-{% block title %}Login | Inope Store{% endblock %}
+{% block title %}Tama | Inope Store{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100" style="min-height: 90vh;">
@@ -8,36 +7,40 @@
             <div class="auth-card">
                 <div class="auth-header">
                     <i class="bi-shop"></i>
-                    <h3>Welcome Back</h3>
-                    <p>Halo Login atu kontinua</p>
+                    <h3>Bemvindu fila fali</h3>
+                    <p>Tama atu kontinua</p>
                 </div>
                 <div class="auth-body">
-                    <form method="post">
+                    <form method="post" action="{% url 'kliente_login' %}" id="loginForm">
                         {% csrf_token %}
+                        {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger py-2 small">{{ form.non_field_errors }}</div>
+                        {% endif %}
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi-envelope me-1"></i>Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="ita@exemplo.com" required>
+                            <label class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi-envelope"></i></span>
+                                <input type="email" name="email" id="emailInput" class="form-control" placeholder="ita@exemplo.com" required>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi-lock me-1"></i>Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                            <label class="form-label">Liafuan-pase</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi-lock"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="Liafuan-pase" required>
+                            </div>
                         </div>
-                        <button type="submit" class="btn-accent w-100 justify-content-center py-2 mt-2">Login</button>
+                        <div class="text-end mb-2">
+                            <a href="#" class="text-muted small" style="text-decoration:none;">Esquece liafuan-pase?</a>
+                        </div>
+                        <button type="submit" class="btn-accent w-100 justify-content-center py-2 mt-2">
+                            Tama
+                        </button>
                     </form>
-
-                    <div class="auth-divider">ou login ho</div>
-
-                    <div class="d-grid gap-2">
-                        <a href="{% provider_login_url 'google' %}" class="btn-outline-store justify-content-center">
-                            <i class="bi-google me-2"></i>Google
-                        </a>
-                        <a href="{% provider_login_url 'facebook' %}" class="btn-outline-store justify-content-center">
-                            <i class="bi-facebook me-2"></i>Facebook
-                        </a>
-                    </div>
                 </div>
                 <div class="auth-footer">
-                    Seidauk iha akun? <a href="{% url 'regist' %}">Registu</a>
+                    Seidauk iha akun? <a href="{% url 'kliente_regist' %}">Registu</a>
                 </div>
             </div>
         </div>

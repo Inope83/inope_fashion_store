@@ -1,0 +1,214 @@
+# Django admin & core UI — Tetun (tet)
+msgid ""
+msgstr ""
+"Project-Id-Version: Inope Store\n"
+"Language: tet\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Home"
+msgstr "Pájina Inisial"
+
+msgid "Log out"
+msgstr "Sai"
+
+msgid "Password"
+msgstr "Liafuan-pase"
+
+msgid "Username"
+msgstr "Naran uzuáriu"
+
+msgid "Save"
+msgstr "Rai"
+
+msgid "Delete"
+msgstr "Hamos"
+
+msgid "Add"
+msgstr "Aumenta"
+
+msgid "Change"
+msgstr "Altera"
+
+msgid "Save and add another"
+msgstr "Rai no aumenta seluk"
+
+msgid "Save and continue editing"
+msgstr "Rai no kontinua edita"
+
+msgid "Yes, I'm sure"
+msgstr "Sim, hakarak"
+
+msgid "Are you sure?"
+msgstr "Ita boot hakarak hanesan ne'e?"
+
+msgid "Search"
+msgstr "Buka"
+
+msgid "Filter"
+msgstr "Filtra"
+
+msgid "Actions"
+msgstr "Asaun"
+
+msgid "Go"
+msgstr "Ba"
+
+msgid "Select all"
+msgstr "Hili hotu"
+
+msgid "None"
+msgstr "Ne'ebé"
+
+msgid "All"
+msgstr "Hotu"
+
+msgid "Welcome,"
+msgstr "Bemvindu,"
+
+msgid "Site administration"
+msgstr "Administra situs"
+
+msgid "View site"
+msgstr "Haree loja"
+
+msgid "Log in"
+msgstr "Tama"
+
+msgid "Please correct the error below."
+msgstr "Favor korrige sala iha kraik."
+
+msgid "Please correct the errors below."
+msgstr "Favor korrige sala sira iha kraik."
+
+msgid "This field is required."
+msgstr "Kampu ida-ne'e presiza."
+
+msgid "Enter a valid email address."
+msgstr "Hatama email ne'ebé loos."
+
+msgid "Successfully deleted %(count)d %(items)s."
+msgstr "Hamos %(count)d %(items)s ho suksesu."
+
+msgid "Successfully added %(name)s."
+msgstr "Aumenta %(name)s ho suksesu."
+
+msgid "The %(name)s \"%(obj)s\" was added successfully."
+msgstr "Aumenta %(name)s \"%(obj)s\" ho suksesu."
+
+msgid "The %(name)s \"%(obj)s\" was changed successfully."
+msgstr "Altera %(name)s \"%(obj)s\" ho suksesu."
+
+msgid "The %(name)s \"%(obj)s\" was deleted successfully."
+msgstr "Hamos %(name)s \"%(obj)s\" ho suksesu."
+
+msgid "You don't have permission to view or edit anything."
+msgstr "Ita boot la iha permisaun atu haree ka edita buat ida."
+
+msgid "Recent actions"
+msgstr "Asaun foun"
+
+msgid "My actions"
+msgstr "Ha'u nia asaun"
+
+msgid "None available"
+msgstr "Seidauk iha"
+
+msgid "Unknown content"
+msgstr "Konteúdu desconhecidu"
+
+msgid "Date/time"
+msgstr "Data/Oras"
+
+msgid "User"
+msgstr "Uzuáriu"
+
+msgid "Action"
+msgstr "Asaun"
+
+msgid "Cancel"
+msgstr "Kansela"
+
+msgid "Submit"
+msgstr "Haruka"
+
+msgid "Back"
+msgstr "Fila"
+
+msgid "Close"
+msgstr "Taka"
+
+msgid "Show all"
+msgstr "Hatudu hotu"
+
+msgid "Clear"
+msgstr "Hamos"
+
+msgid "Today"
+msgstr "Ohin"
+
+msgid "Now"
+msgstr "Agóra"
+
+msgid "Yesterday"
+msgstr "Horiseik"
+
+msgid "Tomorrow"
+msgstr "Aban"
+
+msgid "January"
+msgstr "Janeiru"
+
+msgid "February"
+msgstr "Fevereiru"
+
+msgid "March"
+msgstr "Marsu"
+
+msgid "April"
+msgstr "Abril"
+
+msgid "May"
+msgstr "Maiu"
+
+msgid "June"
+msgstr "Junhu"
+
+msgid "July"
+msgstr "Julhu"
+
+msgid "August"
+msgstr "Agostu"
+
+msgid "September"
+msgstr "Setembru"
+
+msgid "October"
+msgstr "Outubru"
+
+msgid "November"
+msgstr "Novembru"
+
+msgid "December"
+msgstr "Dezembru"
+
+msgid "Mon"
+msgstr "Seg"
+
+msgid "Tue"
+msgstr "Ter"
+
+msgid "Wed"
+msgstr "Qua"
+
+msgid "Thu"
+msgstr "Qui"
+
+msgid "Fri"
+msgstr "Sex"
+
+msgid "Sat"
+msgstr "Sab"
+
+msgid "Sun"
+msgstr "Dom"

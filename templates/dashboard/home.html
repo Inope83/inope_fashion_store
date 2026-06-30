@@ -1,11 +1,11 @@
 {% extends 'dashboard/base.html' %}
-{% block title %}Dashboard{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
+{% block title %}Painel{% endblock %}
+{% block page_title %}Painel{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-lg-3 col-6">
-        <a href="{% url 'produtu_list' %}" class="small-box-link">
+        <a href="{% url 'dashboard:produtu_list' %}" class="small-box-link">
             <div class="small-box text-bg-primary">
                 <div class="inner">
                     <h3>{{ total_produtu }}</h3>
@@ -16,7 +16,7 @@
         </a>
     </div>
     <div class="col-lg-3 col-6">
-        <a href="{% url 'pedidu_list' %}" class="small-box-link">
+        <a href="{% url 'dashboard:pedidu_list' %}" class="small-box-link">
             <div class="small-box text-bg-success">
                 <div class="inner">
                     <h3>{{ total_pedidu }}</h3>
@@ -27,7 +27,7 @@
         </a>
     </div>
     <div class="col-lg-3 col-6">
-        <a href="{% url 'kliente_list' %}" class="small-box-link">
+        <a href="{% url 'dashboard:kliente_list' %}" class="small-box-link">
             <div class="small-box text-bg-warning">
                 <div class="inner">
                     <h3>{{ total_kliente }}</h3>
@@ -38,7 +38,7 @@
         </a>
     </div>
     <div class="col-lg-3 col-6">
-        <a href="{% url 'pagamentu_list' %}" class="small-box-link">
+        <a href="{% url 'dashboard:pagamentu_list' %}" class="small-box-link">
             <div class="small-box text-bg-info">
                 <div class="inner">
                     <h3>${{ total_receita|floatformat:2 }}</h3>
@@ -52,7 +52,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Pedidu Resente</h3>
+        <h3 class="card-title">Pedidu Foun</h3>
     </div>
     <div class="card-body table-responsive p-0">
         <table class="table table-hover text-nowrap">
@@ -71,7 +71,7 @@
                     <td>{{ pedidu.id }}</td>
                     <td>{{ pedidu.kliente.naran }}</td>
                     <td>${{ pedidu.total|floatformat:2 }}</td>
-                    <td><span class="badge bg-{% if pedidu.estado == 'entrega' %}success{% elif pedidu.estado == 'kansela' %}danger{% else %}warning{% endif %}">{{ pedidu.estado|title }}</span></td>
+                    <td><span class="badge bg-{% if pedidu.status == 'entrega' %}success{% elif pedidu.status == 'kansela' %}danger{% else %}warning{% endif %}">{{ pedidu.status|title }}</span></td>
                     <td>{{ pedidu.created_at|date:"d/m/Y H:i" }}</td>
                 </tr>
                 {% empty %}

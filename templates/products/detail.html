@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
-
 {% block title %}{{ produtu.naran }} - Inope Store{% endblock %}
-
 {% block content %}
 <section class="py-5">
     <div class="container px-4 px-lg-5">
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Pájina Inisial</a></li>
                 <li class="breadcrumb-item"><a href="{% url 'produtu_list' %}" class="text-decoration-none">Produtus</a></li>
                 {% if produtu.kategoria %}
                     <li class="breadcrumb-item"><a href="{% url 'produtu_list' %}?kategoria={{ produtu.kategoria.id }}" class="text-decoration-none">{{ produtu.kategoria.naran }}</a></li>
@@ -19,11 +17,13 @@
         <div class="row g-5 align-items-start">
             <div class="col-md-6">
                 <div class="product-detail-image">
-                    {% if produtu.imagem %}
-                        <img src="{{ produtu.imagem.url }}" alt="{{ produtu.naran }}" />
-                    {% else %}
-                        <img src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}" />
-                    {% endif %}
+                    {% with featured=produtu.get_featured_image %}
+                        {% if featured %}
+                            <img src="{{ featured.image.url }}" alt="{{ produtu.naran }}" />
+                        {% else %}
+                            <img src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}" />
+                        {% endif %}
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-md-6 product-detail-info">
@@ -31,33 +31,33 @@
                     <span class="product-category-badge">{{ produtu.kategoria.naran }}</span>
                 {% endif %}
                 <h1>{{ produtu.naran }}</h1>
-                <div class="price-display mb-3">${{ produtu.preco }}</div>
-                <p class="text-muted mb-4" style="font-size: 1rem; line-height: 1.7;">{{ produtu.deskrisaun|default:"No description available." }}</p>
+                <div class="price-display mb-3">${{ produtu.presu }}</div>
+                <p class="text-muted mb-4" style="font-size: 1rem; line-height: 1.7;">{{ produtu.deskrisaun|default:"Laiha deskrisaun." }}</p>
 
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    {% if produtu.stok > 0 %}
-                        <span class="stock-badge in-stock"><i class="bi-check-circle-fill"></i>In stock ({{ produtu.stok }})</span>
+                    {% if produtu.estok > 0 %}
+                        <span class="stock-badge in-stock"><i class="bi-check-circle-fill"></i>Iha estok ({{ produtu.estok }})</span>
                     {% else %}
-                        <span class="stock-badge out-of-stock"><i class="bi-x-circle-fill"></i>Out of stock</span>
+                        <span class="stock-badge out-of-stock"><i class="bi-x-circle-fill"></i>La iha estok</span>
                     {% endif %}
                 </div>
 
-                {% if produtu.stok > 0 %}
-                    <form method="post" action="{% url 'cart_add' %}">
+                {% if produtu.estok > 0 %}
+                    <form method="post" action="{% url 'karetatau' %}">
                         {% csrf_token %}
                         <input type="hidden" name="produtu_id" value="{{ produtu.id }}">
                         <input type="hidden" name="kantidade" value="1">
                         <button type="submit" class="btn-accent btn-lg">
-                            <i class="bi-cart-plus"></i>Add to Cart
+                            <i class="bi-cart-plus"></i>Tau iha Kareta
                         </button>
                     </form>
                 {% endif %}
 
                 <div class="mt-4 pt-4 border-top">
                     <div class="d-flex align-items-center gap-3 text-muted small">
-                        <span><i class="bi-truck me-1"></i>Cash On Delivery</span>
-                        <span><i class="bi-arrow-return-left me-1"></i>Easy Returns</span>
-                        <span><i class="bi-shield-check me-1"></i>Secure Payment</span>
+                        <span><i class="bi-truck me-1"></i>Selu iha fatin (COD)</span>
+                        <span><i class="bi-arrow-return-left me-1"></i>Fila Fásil</span>
+                        <span><i class="bi-shield-check me-1"></i>Selu Seguru</span>
                     </div>
                 </div>
             </div>

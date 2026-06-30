@@ -12,7 +12,7 @@ class KategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Produtu)
 class ProdutuAdmin(admin.ModelAdmin):
-    list_display = ('naran', 'preco', 'stok', 'kategoria')
+    list_display = ('naran', 'presu', 'estok', 'kategoria')
     list_filter = ('kategoria',)
     search_fields = ('naran', 'deskrisaun')
     inlines = [ProdutuImageInline]

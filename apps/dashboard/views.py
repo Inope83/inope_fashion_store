@@ -1,24 +1,39 @@
-from datetime import datetime, timedelta
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
-from django.db.models import Sum, Count, Q
-from django.db.models.functions import TruncDate
+from django.db.models import Sum
 from django.contrib import messages
-from django.http import HttpResponse
 from apps.products.models import Produtu, Kategoria
 from apps.orders.models import Pedidu, DetalloPedidu, Pagamentu
 from apps.users.models import Kliente, Notifikasaun
 from apps.users.models import Admin
+from .forms import DashboardKlienteForm, DashboardAdminForm, DashboardProdutuForm
 
 
 class AdminRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         kliente_id = request.session.get('kliente_id')
+        if not kliente_id and request.user.is_authenticated:
+            kliente, _ = Kliente.objects.get_or_create(
+                email=request.user.email,
+                defaults={
+                    'naran': request.user.get_full_name() or request.user.username,
+                    'is_staff': True,
+                },
+            )
+            if not kliente.is_staff and (request.user.is_superuser or request.user.is_staff):
+                kliente.is_staff = True
+                kliente.save(update_fields=['is_staff'])
+            if kliente.is_staff:
+                kliente_id = kliente.id
+                request.session['kliente_id'] = kliente.id
+                request.session['kliente_naran'] = kliente.naran
+                request.session['admin_id'] = kliente.id
+                request.session['admin_username'] = kliente.naran
         if not kliente_id:
-            return redirect(f"{reverse('login')}?next={request.path}")
+            return redirect(f"{reverse('kliente_login')}?next={request.path}")
         if not Kliente.objects.filter(id=kliente_id, is_staff=True).exists():
-            return redirect(f"{reverse('login')}?next={request.path}")
+            return redirect(f"{reverse('kliente_login')}?next={request.path}")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -43,7 +58,7 @@ class DashboardHome(AdminRequiredMixin, ListView):
         ctx['total_produtu'] = Produtu.objects.count()
         ctx['total_pedidu'] = Pedidu.objects.count()
         ctx['total_kliente'] = Kliente.objects.count()
-        ctx['total_receita'] = Pagamentu.objects.filter(estado='pagu').aggregate(Sum('total'))['total__sum'] or 0
+        ctx['total_receita'] = Pagamentu.objects.filter(status='pagu').aggregate(Sum('total'))['total__sum'] or 0
         return ctx
 
 
@@ -54,7 +69,7 @@ class KategoriaList(DashboardMixin, ListView):
     template_name = 'dashboard/kategoria_list.html'
     active_page = 'product'
     page_title = 'Kategoria'
-    cancel_url = reverse_lazy('kategoria_list')
+    cancel_url = reverse_lazy('dashboard:kategoria_list')
 
 
 class KategoriaCreate(DashboardMixin, CreateView):
@@ -63,10 +78,10 @@ class KategoriaCreate(DashboardMixin, CreateView):
     template_name = 'dashboard/crud_form.html'
     active_page = 'product'
     page_title = 'Kategoria Foun'
-    cancel_url = reverse_lazy('kategoria_list')
+    cancel_url = reverse_lazy('dashboard:kategoria_list')
 
     def get_success_url(self):
-        return reverse_lazy('kategoria_list')
+        return reverse_lazy('dashboard:kategoria_list')
 
 
 class KategoriaUpdate(DashboardMixin, UpdateView):
@@ -75,10 +90,10 @@ class KategoriaUpdate(DashboardMixin, UpdateView):
     template_name = 'dashboard/crud_form.html'
     active_page = 'product'
     page_title = 'Edita Kategoria'
-    cancel_url = reverse_lazy('kategoria_list')
+    cancel_url = reverse_lazy('dashboard:kategoria_list')
 
     def get_success_url(self):
-        return reverse_lazy('kategoria_list')
+        return reverse_lazy('dashboard:kategoria_list')
 
 
 class KategoriaDelete(DashboardMixin, DeleteView):
@@ -86,8 +101,8 @@ class KategoriaDelete(DashboardMixin, DeleteView):
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'product'
     page_title = 'Hamos Kategoria'
-    cancel_url = reverse_lazy('kategoria_list')
-    success_url = reverse_lazy('kategoria_list')
+    cancel_url = reverse_lazy('dashboard:kategoria_list')
+    success_url = reverse_lazy('dashboard:kategoria_list')
 
 
 # ─── Produtu CRUD ───
@@ -97,7 +112,7 @@ class ProdutuList(DashboardMixin, ListView):
     template_name = 'dashboard/produtu_list.html'
     active_page = 'produtu'
     page_title = 'Produtu'
-    cancel_url = reverse_lazy('produtu_list')
+    cancel_url = reverse_lazy('dashboard:produtu_list')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -107,26 +122,26 @@ class ProdutuList(DashboardMixin, ListView):
 
 class ProdutuCreate(DashboardMixin, CreateView):
     model = Produtu
-    fields = ['naran', 'deskrisaun', 'preco', 'stok', 'imagem', 'kategoria']
+    form_class = DashboardProdutuForm
     template_name = 'dashboard/crud_form.html'
     active_page = 'product'
     page_title = 'Produtu Foun'
-    cancel_url = reverse_lazy('produtu_list')
+    cancel_url = reverse_lazy('dashboard:produtu_list')
 
     def get_success_url(self):
-        return reverse_lazy('produtu_list')
+        return reverse_lazy('dashboard:produtu_list')
 
 
 class ProdutuUpdate(DashboardMixin, UpdateView):
     model = Produtu
-    fields = ['naran', 'deskrisaun', 'preco', 'stok', 'imagem', 'kategoria']
+    form_class = DashboardProdutuForm
     template_name = 'dashboard/crud_form.html'
     active_page = 'product'
     page_title = 'Edita Produtu'
-    cancel_url = reverse_lazy('produtu_list')
+    cancel_url = reverse_lazy('dashboard:produtu_list')
 
     def get_success_url(self):
-        return reverse_lazy('produtu_list')
+        return reverse_lazy('dashboard:produtu_list')
 
 
 class ProdutuDelete(DashboardMixin, DeleteView):
@@ -134,8 +149,8 @@ class ProdutuDelete(DashboardMixin, DeleteView):
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'product'
     page_title = 'Hamos Produtu'
-    cancel_url = reverse_lazy('produtu_list')
-    success_url = reverse_lazy('produtu_list')
+    cancel_url = reverse_lazy('dashboard:produtu_list')
+    success_url = reverse_lazy('dashboard:produtu_list')
 
 
 # ─── Kliente CRUD ───
@@ -145,31 +160,31 @@ class KlienteList(DashboardMixin, ListView):
     template_name = 'dashboard/kliente_list.html'
     active_page = 'kliente'
     page_title = 'Kliente'
-    cancel_url = reverse_lazy('kliente_list')
+    cancel_url = reverse_lazy('dashboard:kliente_list')
 
 
 class KlienteCreate(DashboardMixin, CreateView):
     model = Kliente
-    fields = ['naran', 'email', 'password']
+    form_class = DashboardKlienteForm
     template_name = 'dashboard/crud_form.html'
     active_page = 'kliente'
     page_title = 'Kliente Foun'
-    cancel_url = reverse_lazy('kliente_list')
+    cancel_url = reverse_lazy('dashboard:kliente_list')
 
     def get_success_url(self):
-        return reverse_lazy('kliente_list')
+        return reverse_lazy('dashboard:kliente_list')
 
 
 class KlienteUpdate(DashboardMixin, UpdateView):
     model = Kliente
-    fields = ['naran', 'email', 'password']
+    form_class = DashboardKlienteForm
     template_name = 'dashboard/crud_form.html'
     active_page = 'kliente'
     page_title = 'Edita Kliente'
-    cancel_url = reverse_lazy('kliente_list')
+    cancel_url = reverse_lazy('dashboard:kliente_list')
 
     def get_success_url(self):
-        return reverse_lazy('kliente_list')
+        return reverse_lazy('dashboard:kliente_list')
 
 
 class KlienteDelete(DashboardMixin, DeleteView):
@@ -177,8 +192,8 @@ class KlienteDelete(DashboardMixin, DeleteView):
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'kliente'
     page_title = 'Hamos Kliente'
-    cancel_url = reverse_lazy('kliente_list')
-    success_url = reverse_lazy('kliente_list')
+    cancel_url = reverse_lazy('dashboard:kliente_list')
+    success_url = reverse_lazy('dashboard:kliente_list')
 
 
 # ─── Notifikasaun CRUD ───
@@ -188,7 +203,7 @@ class NotifikasaunList(DashboardMixin, ListView):
     template_name = 'dashboard/notifikasaun_list.html'
     active_page = 'notifikasaun'
     page_title = 'Notifikasaun'
-    cancel_url = reverse_lazy('notifikasaun_list')
+    cancel_url = reverse_lazy('dashboard:notifikasaun_list')
 
 
 class NotifikasaunCreate(DashboardMixin, CreateView):
@@ -197,10 +212,10 @@ class NotifikasaunCreate(DashboardMixin, CreateView):
     template_name = 'dashboard/crud_form.html'
     active_page = 'notifikasaun'
     page_title = 'Notifikasaun Foun'
-    cancel_url = reverse_lazy('notifikasaun_list')
+    cancel_url = reverse_lazy('dashboard:notifikasaun_list')
 
     def get_success_url(self):
-        return reverse_lazy('notifikasaun_list')
+        return reverse_lazy('dashboard:notifikasaun_list')
 
 
 class NotifikasaunUpdate(DashboardMixin, UpdateView):
@@ -209,10 +224,10 @@ class NotifikasaunUpdate(DashboardMixin, UpdateView):
     template_name = 'dashboard/crud_form.html'
     active_page = 'notifikasaun'
     page_title = 'Edita Notifikasaun'
-    cancel_url = reverse_lazy('notifikasaun_list')
+    cancel_url = reverse_lazy('dashboard:notifikasaun_list')
 
     def get_success_url(self):
-        return reverse_lazy('notifikasaun_list')
+        return reverse_lazy('dashboard:notifikasaun_list')
 
 
 class NotifikasaunDelete(DashboardMixin, DeleteView):
@@ -220,8 +235,8 @@ class NotifikasaunDelete(DashboardMixin, DeleteView):
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'notifikasaun'
     page_title = 'Hamos Notifikasaun'
-    cancel_url = reverse_lazy('notifikasaun_list')
-    success_url = reverse_lazy('notifikasaun_list')
+    cancel_url = reverse_lazy('dashboard:notifikasaun_list')
+    success_url = reverse_lazy('dashboard:notifikasaun_list')
 
 
 # ─── Pedidu CRUD ───
@@ -231,31 +246,31 @@ class PediduList(DashboardMixin, ListView):
     template_name = 'dashboard/pedidu_list.html'
     active_page = 'pedidu'
     page_title = 'Pedidu'
-    cancel_url = reverse_lazy('pedidu_list')
+    cancel_url = reverse_lazy('dashboard:pedidu_list')
 
 
 class PediduCreate(DashboardMixin, CreateView):
     model = Pedidu
-    fields = ['kliente', 'estado', 'total', 'endeereco_entrega']
+    fields = ['kliente', 'status', 'total', 'enderesu']
     template_name = 'dashboard/crud_form.html'
     active_page = 'order'
     page_title = 'Pedidu Foun'
-    cancel_url = reverse_lazy('pedidu_list')
+    cancel_url = reverse_lazy('dashboard:pedidu_list')
 
     def get_success_url(self):
-        return reverse_lazy('pedidu_list')
+        return reverse_lazy('dashboard:pedidu_list')
 
 
 class PediduUpdate(DashboardMixin, UpdateView):
     model = Pedidu
-    fields = ['kliente', 'estado', 'total', 'endeereco_entrega']
+    fields = ['kliente', 'status', 'total', 'enderesu']
     template_name = 'dashboard/crud_form.html'
     active_page = 'order'
     page_title = 'Edita Pedidu'
-    cancel_url = reverse_lazy('pedidu_list')
+    cancel_url = reverse_lazy('dashboard:pedidu_list')
 
     def get_success_url(self):
-        return reverse_lazy('pedidu_list')
+        return reverse_lazy('dashboard:pedidu_list')
 
 
 class PediduDelete(DashboardMixin, DeleteView):
@@ -263,8 +278,8 @@ class PediduDelete(DashboardMixin, DeleteView):
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'order'
     page_title = 'Hamos Pedidu'
-    cancel_url = reverse_lazy('pedidu_list')
-    success_url = reverse_lazy('pedidu_list')
+    cancel_url = reverse_lazy('dashboard:pedidu_list')
+    success_url = reverse_lazy('dashboard:pedidu_list')
 
 
 # ─── DetalloPedidu CRUD ───
@@ -274,7 +289,7 @@ class DetalloPediduList(DashboardMixin, ListView):
     template_name = 'dashboard/detallopedidu_list.html'
     active_page = 'detallu'
     page_title = 'Detallu Pedidu'
-    cancel_url = reverse_lazy('detallopedidu_list')
+    cancel_url = reverse_lazy('dashboard:detallopedidu_list')
 
 
 class DetalloPediduCreate(DashboardMixin, CreateView):
@@ -283,10 +298,10 @@ class DetalloPediduCreate(DashboardMixin, CreateView):
     template_name = 'dashboard/crud_form.html'
     active_page = 'order'
     page_title = 'Detallu Foun'
-    cancel_url = reverse_lazy('detallopedidu_list')
+    cancel_url = reverse_lazy('dashboard:detallopedidu_list')
 
     def get_success_url(self):
-        return reverse_lazy('detallopedidu_list')
+        return reverse_lazy('dashboard:detallopedidu_list')
 
 
 class DetalloPediduUpdate(DashboardMixin, UpdateView):
@@ -295,10 +310,10 @@ class DetalloPediduUpdate(DashboardMixin, UpdateView):
     template_name = 'dashboard/crud_form.html'
     active_page = 'order'
     page_title = 'Edita Detallu'
-    cancel_url = reverse_lazy('detallopedidu_list')
+    cancel_url = reverse_lazy('dashboard:detallopedidu_list')
 
     def get_success_url(self):
-        return reverse_lazy('detallopedidu_list')
+        return reverse_lazy('dashboard:detallopedidu_list')
 
 
 class DetalloPediduDelete(DashboardMixin, DeleteView):
@@ -306,8 +321,8 @@ class DetalloPediduDelete(DashboardMixin, DeleteView):
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'order'
     page_title = 'Hamos Detallu'
-    cancel_url = reverse_lazy('detallopedidu_list')
-    success_url = reverse_lazy('detallopedidu_list')
+    cancel_url = reverse_lazy('dashboard:detallopedidu_list')
+    success_url = reverse_lazy('dashboard:detallopedidu_list')
 
 
 # ─── Pagamentu CRUD ───
@@ -317,31 +332,31 @@ class PagamentuList(DashboardMixin, ListView):
     template_name = 'dashboard/pagamentu_list.html'
     active_page = 'pagamentu'
     page_title = 'Pagamentu'
-    cancel_url = reverse_lazy('pagamentu_list')
+    cancel_url = reverse_lazy('dashboard:pagamentu_list')
 
 
 class PagamentuCreate(DashboardMixin, CreateView):
     model = Pagamentu
-    fields = ['pedidu', 'metodu', 'total', 'estado']
+    fields = ['pedidu', 'metodu', 'total', 'status']
     template_name = 'dashboard/crud_form.html'
     active_page = 'order'
     page_title = 'Pagamentu Foun'
-    cancel_url = reverse_lazy('pagamentu_list')
+    cancel_url = reverse_lazy('dashboard:pagamentu_list')
 
     def get_success_url(self):
-        return reverse_lazy('pagamentu_list')
+        return reverse_lazy('dashboard:pagamentu_list')
 
 
 class PagamentuUpdate(DashboardMixin, UpdateView):
     model = Pagamentu
-    fields = ['pedidu', 'metodu', 'total', 'estado']
+    fields = ['pedidu', 'metodu', 'total', 'status']
     template_name = 'dashboard/crud_form.html'
     active_page = 'order'
     page_title = 'Edita Pagamentu'
-    cancel_url = reverse_lazy('pagamentu_list')
+    cancel_url = reverse_lazy('dashboard:pagamentu_list')
 
     def get_success_url(self):
-        return reverse_lazy('pagamentu_list')
+        return reverse_lazy('dashboard:pagamentu_list')
 
 
 class PagamentuDelete(DashboardMixin, DeleteView):
@@ -349,8 +364,8 @@ class PagamentuDelete(DashboardMixin, DeleteView):
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'order'
     page_title = 'Hamos Pagamentu'
-    cancel_url = reverse_lazy('pagamentu_list')
-    success_url = reverse_lazy('pagamentu_list')
+    cancel_url = reverse_lazy('dashboard:pagamentu_list')
+    success_url = reverse_lazy('dashboard:pagamentu_list')
 
 
 # ─── Admin CRUD ───
@@ -359,116 +374,55 @@ class AdminList(DashboardMixin, ListView):
     model = Admin
     template_name = 'dashboard/admin_list.html'
     active_page = 'admin'
-    page_title = 'Admin'
-    cancel_url = reverse_lazy('admin_list')
+    page_title = 'Administrador'
+    cancel_url = reverse_lazy('dashboard:admin_list')
 
 
 class AdminCreate(DashboardMixin, CreateView):
     model = Admin
-    fields = ['username', 'password']
+    form_class = DashboardAdminForm
     template_name = 'dashboard/crud_form.html'
     active_page = 'admin'
-    page_title = 'Admin Foun'
-    cancel_url = reverse_lazy('admin_list')
+    page_title = 'Administrador Foun'
+    cancel_url = reverse_lazy('dashboard:admin_list')
 
     def get_success_url(self):
-        return reverse_lazy('admin_list')
+        return reverse_lazy('dashboard:admin_list')
 
 
 class AdminUpdate(DashboardMixin, UpdateView):
     model = Admin
-    fields = ['username', 'password']
+    form_class = DashboardAdminForm
     template_name = 'dashboard/crud_form.html'
     active_page = 'admin'
-    page_title = 'Edita Admin'
-    cancel_url = reverse_lazy('admin_list')
+    page_title = 'Edita Administrador'
+    cancel_url = reverse_lazy('dashboard:admin_list')
 
     def get_success_url(self):
-        return reverse_lazy('admin_list')
+        return reverse_lazy('dashboard:admin_list')
 
 
 class AdminDelete(DashboardMixin, DeleteView):
     model = Admin
     template_name = 'dashboard/crud_confirm_delete.html'
     active_page = 'admin'
-    page_title = 'Hamos Admin'
-    cancel_url = reverse_lazy('admin_list')
-    success_url = reverse_lazy('admin_list')
-
-
-# ─── Report ───
-
-class ReportView(AdminRequiredMixin, View):
-    template_name = 'dashboard/report.html'
-
-    def get(self, request):
-        start_date = request.GET.get('start')
-        end_date = request.GET.get('end')
-
-        pedidus = Pedidu.objects.all()
-        pagamentus = Pagamentu.objects.filter(estado='pagu')
-
-        if start_date:
-            pedidus = pedidus.filter(created_at__gte=start_date)
-            pagamentus = pagamentus.filter(created_at__gte=start_date)
-        if end_date:
-            pedidus = pedidus.filter(created_at__lte=end_date)
-            pagamentus = pagamentus.filter(created_at__lte=end_date)
-
-        ctx = {
-            'total_kliente': Kliente.objects.count(),
-            'total_produtu': Produtu.objects.count(),
-            'total_pedidu': pedidus.count(),
-            'total_receita': pagamentus.aggregate(Sum('total'))['total__sum'] or 0,
-
-            'pedidu_estadu': {
-                s: pedidus.filter(estado=s).count()
-                for s, _ in Pedidu.STATUS_CHOICES
-            },
-            'pagamentu_estadu': {
-                s: Pagamentu.objects.filter(estado=s).count()
-                for s, _ in Pagamentu.STATUS_CHOICES
-            },
-
-            'receita_diaria': list(
-                pagamentus.annotate(dia=TruncDate('created_at'))
-                .values('dia').annotate(total=Sum('total'))
-                .order_by('dia')
-            ),
-            'produtu_toni': list(
-                DetalloPedidu.objects.values('produtu__naran')
-                .annotate(total=Sum('kantidade'))
-                .order_by('-total')[:5]
-            ),
-
-            'start_date': start_date,
-            'end_date': end_date,
-        }
-        return render(request, self.template_name, ctx)
-
-
-def report_export_csv(request):
-    import csv
-    start_date = request.GET.get('start')
-    end_date = request.GET.get('end')
-
-    pagamentus = Pagamentu.objects.filter(estado='pagu').select_related('pedidu__kliente')
-    if start_date:
-        pagamentus = pagamentus.filter(created_at__gte=start_date)
-    if end_date:
-        pagamentus = pagamentus.filter(created_at__lte=end_date)
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="relatoriu_inope.csv"'
-    w = csv.writer(response)
-    w.writerow(['Data', 'Pedidu', 'Kliente', 'Metodu', 'Total'])
-    for p in pagamentus:
-        w.writerow([p.created_at.strftime('%d/%m/%Y'),
-                    p.pedidu.id,
-                    p.pedidu.kliente.naran,
-                    p.metodu,
-                    p.total])
-    return response
+    page_title = 'Hamos Administrador'
+    cancel_url = reverse_lazy('dashboard:admin_list')
+    success_url = reverse_lazy('dashboard:admin_list')
 
 
 # ─── Dashboard Auth ───
+
+def dashboard_login_view(request):
+    if request.session.get('kliente_id'):
+        return redirect('dashboard:dashboard_home')
+    return redirect('kliente_login')
+
+
+def dashboard_logout_view(request):
+    request.session.pop('admin_id', None)
+    request.session.pop('admin_username', None)
+    request.session.pop('kliente_id', None)
+    request.session.pop('kliente_naran', None)
+    messages.info(request, 'Ita sai ona.')
+    return redirect('dashboard:dashboard_login')

@@ -11,25 +11,54 @@
                     <p>Preenxe dadus atu registu</p>
                 </div>
                 <div class="auth-body">
-                    <form method="post">
+                    <form method="post" action="{% url 'kliente_regist' %}">
                         {% csrf_token %}
+                        {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger py-2 small">{{ form.non_field_errors }}</div>
+                        {% endif %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger py-2 small">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}{{ error }}<br>{% endfor %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi-person me-1"></i>Naran</label>
-                            <input type="text" name="naran" class="form-control" placeholder="Ita nia naran" required>
+                            <label class="form-label">Naran</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi-person"></i></span>
+                                <input type="text" name="name" class="form-control" placeholder="Ita nia naran" required>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi-envelope me-1"></i>Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="ita@exemplo.com" required>
+                            <label class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi-envelope"></i></span>
+                                <input type="email" name="email" class="form-control" placeholder="ita@exemplo.com" required>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi-lock me-1"></i>Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                            <label class="form-label">Liafuan-pase</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi-lock"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="Liafuan-pase" required>
+                            </div>
                         </div>
-                        <button type="submit" class="btn-accent w-100 justify-content-center py-2 mt-2">Registu</button>
+                        <div class="mb-3">
+                            <label class="form-label">Konfirma Liafuan-pase</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi-lock-fill"></i></span>
+                                <input type="password" name="confirm_password" class="form-control" placeholder="Repete liafuan-pase" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-accent w-100 justify-content-center py-2 mt-2">
+                            Registu
+                        </button>
                     </form>
                 </div>
                 <div class="auth-footer">
-                    Iha ona akun? <a href="{% url 'login' %}">Login</a>
+                    Iha ona akun? <a href="{% url 'kliente_login' %}">Tama</a>
                 </div>
             </div>
         </div>

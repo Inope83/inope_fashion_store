@@ -7,7 +7,7 @@
 <header class="hero-section">
     <div class="container px-4 px-lg-5 my-5 text-center">
         <h1 class="display-4 fw-bolder text-white">Sasan diak ho presu baratu</h1>
-        <p class="lead fw-normal text-white-50 mb-4">Compra online, simu iha uma — selu kuandu simu (COD)</p>
+        <p class="lead fw-normal text-white-50 mb-4">Sosa iha online, simu iha uma — selu bainhira simu (COD)</p>
         <a href="{% url 'produtu_list' %}" class="btn-accent btn-lg">
             <i class="bi-bag-check"></i>Sosa Agora
         </a>
@@ -17,40 +17,42 @@
 <section class="py-5">
     <div class="container px-4 px-lg-5">
         <div class="d-flex align-items-center justify-content-between mb-5">
-            <h2 class="section-title mb-0">Produtu <span>Resente</span></h2>
+            <h2 class="section-title mb-0">Produtu <span>Foun</span></h2>
             <a href="{% url 'produtu_list' %}" class="btn-outline-store">
-                View All <i class="bi-arrow-right"></i>
+                Haree Hotu <i class="bi-arrow-right"></i>
             </a>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
             {% for produtu in featured %}
-            <div class="col mb-5">
-                <div class="card h-100">
-                    {% if produtu.stok <= 0 %}
-                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Out of stock</div>
-                    {% endif %}
+            <div class="col fade-in">
+                <div class="product-card">
+                    <div class="card-img-wrapper">
+                        {% if produtu.estok <= 0 %}
+                            <span class="badge-out-of-stock">La iha estok</span>
+                        {% endif %}
 
-                    {% if produtu.imagem %}
-                        <img class="card-img-top" src="{{ produtu.imagem.url }}" alt="{{ produtu.naran }}" />
-                    {% else %}
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}" />
-                    {% endif %}
-
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <h5 class="fw-bolder">{{ produtu.naran }}</h5>
-                            <p class="mb-1">${{ produtu.preco }}</p>
-                            {% if produtu.kategoria %}
-                                <small class="text-muted">{{ produtu.kategoria.naran }}</small>
+                        {% with featured=produtu.get_featured_image %}
+                            {% if featured %}
+                                <img src="{{ featured.image.url }}" alt="{{ produtu.naran }}" />
+                            {% else %}
+                                <img src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}" />
                             {% endif %}
-                        </div>
+                        {% endwith %}
                     </div>
 
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" href="{% url 'produtu_detail' produtu.id %}">View product</a>
-                        </div>
+                    <div class="card-body">
+                        <div class="product-name">{{ produtu.naran }}</div>
+                        {% if produtu.kategoria %}
+                            <div class="product-category">{{ produtu.kategoria.naran }}</div>
+                        {% endif %}
+                        <div class="product-price">${{ produtu.presu }}</div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a class="btn-view" href="{% url 'produtu_detail' produtu.id %}">
+                            <i class="bi-eye me-1"></i>Haree Produtu
+                        </a>
                     </div>
                 </div>
             </div>
@@ -58,8 +60,8 @@
             <div class="col-12">
                 <div class="empty-state">
                     <i class="bi-box-seam"></i>
-                    <h4>No products yet</h4>
-                    <p>Products will appear here once added by the admin.</p>
+                    <h4>Seidauk iha produtu</h4>
+                    <p>Produtu sei mosu iha ne'e bainhira admin tau tiha.</p>
                 </div>
             </div>
             {% endfor %}

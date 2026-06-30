@@ -18,27 +18,50 @@
             </div>
             <div class="col-lg-8">
                 <div class="profile-card">
+                    {% if request.GET.edit or form.errors %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <dl class="row mb-0 profile-info">
+                            <dt class="col-sm-4">Naran</dt>
+                            <dd class="col-sm-8">{{ form.naran }}</dd>
+                            <dt class="col-sm-4">Email</dt>
+                            <dd class="col-sm-8">{{ form.email }}</dd>
+                            {% if kliente.last_login %}
+                            <dt class="col-sm-4">Ultimu Tama</dt>
+                            <dd class="col-sm-8">{{ kliente.last_login|date:"d/m/Y H:i" }}</dd>
+                            {% endif %}
+                        </dl>
+                        <div class="profile-actions">
+                            <button type="submit" class="btn-accent"><i class="bi-check-lg"></i>Salva</button>
+                            <a href="{% url 'perfil' %}" class="btn-outline-store">Kansela</a>
+                        </div>
+                    </form>
+                    {% else %}
                     <dl class="row mb-0 profile-info">
                         <dt class="col-sm-4">Naran</dt>
                         <dd class="col-sm-8">{{ kliente.naran }}</dd>
                         <dt class="col-sm-4">Email</dt>
                         <dd class="col-sm-8">{{ kliente.email }}</dd>
                         {% if kliente.last_login %}
-                            <dt class="col-sm-4">Ultimu Login</dt>
+                            <dt class="col-sm-4">Ultimu Tama</dt>
                             <dd class="col-sm-8">{{ kliente.last_login|date:"d/m/Y H:i" }}</dd>
                         {% endif %}
                     </dl>
                     <div class="profile-actions">
+                        <a href="{% url 'perfil' %}?edit=1" class="btn-outline-store">
+                            <i class="bi-pencil"></i>Edita Perfil
+                        </a>
                         <a href="{% url 'order_history' %}" class="btn-outline-store">
                             <i class="bi-box-seam"></i>Historia Pedidu
                         </a>
                         <a href="{% url 'notifikasaun_list' %}" class="btn-outline-store">
                             <i class="bi-bell"></i>Notifikasaun
                         </a>
-                        <a href="{% url 'logout' %}" class="btn-danger-store">
+                        <a href="{% url 'kliente_logout' %}" class="btn-danger-store">
                             <i class="bi-box-arrow-right"></i>Sai
                         </a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

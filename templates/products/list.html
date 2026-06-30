@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}Produtus - Inope Store{% endblock %}
-
 {% block content %}
 <section class="py-5">
     <div class="container px-4 px-lg-5">
@@ -10,13 +8,13 @@
                 <div class="sidebar-filter">
                     <h5><i class="bi-funnel me-2"></i>Kategoria</h5>
                     <div class="list-group">
-                        <a href="{% url 'produtu_list' %}"
+                        <a href="{% url 'produtu_list' %}{% if q %}?q={{ q }}{% endif %}"
                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if not request.GET.kategoria %}active{% endif %}">
                             Hotu
                             <span class="badge bg-secondary rounded-pill">{{ kategorias|length }}</span>
                         </a>
                         {% for kat in kategorias %}
-                            <a href="{% url 'produtu_list' %}?kategoria={{ kat.id }}"
+                            <a href="{% url 'produtu_list' %}?kategoria={{ kat.id }}{% if q %}&q={{ q }}{% endif %}"
                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if request.GET.kategoria|stringformat:'s' == kat.id|stringformat:'s' %}active{% endif %}">
                                 {{ kat.naran }}
                                 <span class="badge bg-secondary rounded-pill">{{ kat.produtus.count }}</span>
@@ -28,32 +26,40 @@
             <div class="col-lg-9">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="section-title mb-0"><span>Produtus</span></h2>
-                    <span class="text-muted small">{{ produtus|length }} produtu{{ produtus|pluralize }}</span>
+                    <form method="get" class="d-flex gap-2" style="max-width:300px;">
+                        {% if request.GET.kategoria %}<input type="hidden" name="kategoria" value="{{ request.GET.kategoria }}">{% endif %}
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Buka produtu..." value="{{ q }}" style="border-radius:0.5rem 0 0 0.5rem;">
+                            <button class="btn-accent" type="submit" style="border-radius:0 0.5rem 0.5rem 0;padding:0.5rem 1rem;"><i class="bi-search"></i></button>
+                        </div>
+                    </form>
                 </div>
                 <div class="row g-4">
                     {% for produtu in produtus %}
                         <div class="col-sm-6 col-xl-4 fade-in">
                             <div class="product-card">
                                 <div class="card-img-wrapper">
-                                    {% if produtu.stok <= 0 %}
-                                        <span class="badge-out-of-stock">Out of Stock</span>
+                                    {% if produtu.estok <= 0 %}
+                                        <span class="badge-out-of-stock">La iha iha Estok</span>
                                     {% endif %}
-                                    {% if produtu.imagem %}
-                                        <img src="{{ produtu.imagem.url }}" alt="{{ produtu.naran }}">
-                                    {% else %}
-                                        <img src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}">
-                                    {% endif %}
+                                    {% with featured=produtu.get_featured_image %}
+                                        {% if featured %}
+                                            <img src="{{ featured.image.url }}" alt="{{ produtu.naran }}">
+                                        {% else %}
+                                            <img src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ produtu.naran }}">
+                                        {% endif %}
+                                    {% endwith %}
                                 </div>
                                 <div class="card-body">
                                     <div class="product-name">{{ produtu.naran }}</div>
                                     {% if produtu.kategoria %}
                                         <div class="product-category">{{ produtu.kategoria.naran }}</div>
                                     {% endif %}
-                                    <div class="product-price">${{ produtu.preco }}</div>
+                                    <div class="product-price">${{ produtu.presu }}</div>
                                 </div>
                                 <div class="card-footer">
                                     <a class="btn-view" href="{% url 'produtu_detail' produtu.id %}">
-                                        <i class="bi-eye me-1"></i>View product
+                                        <i class="bi-eye me-1"></i>Haree Produtu
                                     </a>
                                 </div>
                             </div>
@@ -62,15 +68,30 @@
                         <div class="col-12">
                             <div class="empty-state">
                                 <i class="bi-search"></i>
-                                <h4>No products found</h4>
-                                <p>Try selecting a different category or check back later.</p>
+                                <h4>Laiha produtu</h4>
+                                <p>Selesiona kategoria seluk ka hein tempu seluk.</p>
                                 <a href="{% url 'produtu_list' %}" class="btn-primary-store">
-                                    <i class="bi-grid"></i>View All Products
+                                    <i class="bi-grid"></i>Haree Produtu Hotu
                                 </a>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
+                {% if produtus.paginator.num_pages > 1 %}
+                <nav class="mt-4 d-flex justify-content-center">
+                    <ul class="pagination">
+                        {% if produtus.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1{% if request.GET.kategoria %}&kategoria={{ request.GET.kategoria }}{% endif %}{% if q %}&q={{ q }}{% endif %}">&laquo;</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ produtus.previous_page_number }}{% if request.GET.kategoria %}&kategoria={{ request.GET.kategoria }}{% endif %}{% if q %}&q={{ q }}{% endif %}">&lsaquo;</a></li>
+                        {% endif %}
+                        <li class="page-item active"><span class="page-link">{{ produtus.number }} / {{ produtus.paginator.num_pages }}</span></li>
+                        {% if produtus.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ produtus.next_page_number }}{% if request.GET.kategoria %}&kategoria={{ request.GET.kategoria }}{% endif %}{% if q %}&q={{ q }}{% endif %}">&rsaquo;</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ produtus.paginator.num_pages }}{% if request.GET.kategoria %}&kategoria={{ request.GET.kategoria }}{% endif %}{% if q %}&q={{ q }}{% endif %}">&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
             </div>
         </div>
     </div>

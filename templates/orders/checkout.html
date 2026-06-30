@@ -1,37 +1,53 @@
 {% extends 'base.html' %}
 
-{% block title %}Checkout - Inope Store{% endblock %}
+{% block title %}Finaliza Pedidu - Inope Store{% endblock %}
 
 {% block content %}
 <section class="py-5">
     <div class="container px-4 px-lg-5">
-        <h2 class="section-title mb-4"><span>Checkout</span></h2>
+        <h2 class="section-title mb-4"><span>Finaliza Pedidu</span></h2>
 
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="cart-summary">
-                    <h5 class="mb-3"><i class="bi-geo-alt me-2"></i>Endereco Entrega</h5>
+                    <h5 class="mb-3"><i class="bi-geo-alt me-2"></i>Enderesu Entrega</h5>
                     <form method="post" class="checkout-form">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label">Endereco Kompletu</label>
-                            <textarea name="endeereco_entrega" class="form-control" rows="4" placeholder="Rua, numero, cidade, ..." required></textarea>
+                            <label class="form-label">Enderesu Kompletu</label>
+                            <textarea name="address" class="form-control" rows="4" placeholder="Rua, numeru, sidade, ..." required></textarea>
                         </div>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn-accent">
                                 <i class="bi-check-lg"></i>Konfirma Pedidu
                             </button>
-                            <a href="{% url 'cart' %}" class="btn-outline-store">Kansela</a>
+                            <a href="{% url 'kareta' %}" class="btn-outline-store">Kansela</a>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="cart-summary">
-                    <h5 class="mb-3"><i class="bi-info-circle me-2"></i>Informasaun</h5>
+                    <h5 class="mb-3"><i class="bi-bag-check me-2"></i>Sumáriu Pedidu</h5>
+                    {% if items %}
+                        {% for item in items %}
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2" style="border-bottom:1px solid var(--gray-100);">
+                            <div>
+                                <div class="fw-semibold small">{{ item.produtu.naran }}</div>
+                                <small class="text-muted">{{ item.kantidade }}x ${{ item.produtu.presu }}</small>
+                            </div>
+                            <span class="fw-bold small">${{ item.subtotal }}</span>
+                        </div>
+                        {% endfor %}
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2" style="border-top:2px solid var(--gray-200);">
+                            <strong>Totál</strong>
+                            <strong class="fs-5" style="color:var(--accent);">${{ total }}</strong>
+                        </div>
+                    {% endif %}
+                    <hr>
                     <div class="d-flex align-items-center gap-3 text-muted small mb-3">
-                        <span><i class="bi-truck me-1"></i>Cash On Delivery</span>
-                        <span><i class="bi-shield-check me-1"></i>Secure</span>
+                        <span><i class="bi-truck me-1"></i>Selu iha fatin (COD)</span>
+                        <span><i class="bi-shield-check me-1"></i>Seguru</span>
                     </div>
                     <p class="text-muted small mb-0">Selu kuandu simu sasan iha uma. Ita sei simu konfirmasaun pedidu depois de haruka.</p>
                 </div>
