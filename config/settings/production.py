@@ -1,10 +1,15 @@
 import os
+from django.core.exceptions import ImproperlyConfigured
 
 from .base import *
 
 DEBUG = False
 
 ALLOWED_HOSTS = ['inopestore.com']
+
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') or os.getenv('SECRET_KEY')
+if not SECRET_KEY or SECRET_KEY.startswith('django-insecure-'):
+    raise ImproperlyConfigured("DJANGO_SECRET_KEY environment variable is required and must be secure in production!")
 
 DATABASES = {
     'default': {

@@ -3,33 +3,82 @@
 {% block page_title %}Produtu{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="card-title">Lista Produtu</h3>
-        <a href="{% url 'produtu_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Foun</a>
+<div class="card card-outline card-primary">
+    <div class="card-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h3 class="card-title mb-0">Lista Produtu</h3>
+            <div class="d-flex gap-2">
+                <div class="input-group input-group-sm" style="max-width:260px">
+                    <input type="text" class="form-control table-search" placeholder="Buka...">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+                <a href="{% url 'dashboard:produtu_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Foun</a>
+            </div>
+        </div>
     </div>
-    <div class="card-body table-responsive p-0">
-        <table class="table table-hover">
-            <thead><tr><th>ID</th><th>Image</th><th>Naran</th><th>Kategoria</th><th>Preco</th><th>Stok</th><th>Aksaun</th></tr></thead>
-            <tbody>
-                {% for obj in object_list %}
-                <tr>
-                    <td>{{ obj.id }}</td>
-                    <td>{% if obj.imagem %}<img src="{{ obj.imagem.url }}" width="40" height="40" style="object-fit:cover">{% else %}-{% endif %}</td>
-                    <td>{{ obj.naran }}</td>
-                    <td>{{ obj.kategoria.naran }}</td>
-                    <td>${{ obj.preco }}</td>
-                    <td><span class="badge bg-{% if obj.stok > 0 %}success{% else %}danger{% endif %}">{{ obj.stok }}</span></td>
-                    <td>
-                        <a href="{% url 'produtu_update' obj.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                        <a href="{% url 'produtu_delete' obj.pk %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="7" class="text-center">Laiha produtu</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Imajen</th>
+                        <th>Naran</th>
+                        <th>Kategoria</th>
+                        <th>Presu</th>
+                        <th>Estok</th>
+                        <th class="text-end">Aksaun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in object_list %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td>
+                            {% with featured=obj.get_featured_image %}
+                                {% if featured %}
+                                <img src="{{ featured.image.url }}" width="40" height="40" class="rounded" style="object-fit:cover">
+                                {% else %}
+                                <span class="text-muted"><i class="fas fa-image fa-lg"></i></span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td class="fw-semibold">{{ obj.naran }}</td>
+                        <td><span class="badge bg-info">{{ obj.kategoria.naran }}</span></td>
+                        <td class="fw-semibold">${{ obj.presu }}</td>
+                        <td>
+                            {% if obj.estok > 10 %}
+                            <span class="badge bg-success">{{ obj.estok }}</span>
+                            {% elif obj.estok > 0 %}
+                            <span class="badge bg-warning text-dark">{{ obj.estok }}</span>
+                            {% else %}
+                            <span class="badge bg-danger">0</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'dashboard:produtu_update' obj.pk %}" class="btn btn-outline-warning" title="Edita"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'dashboard:produtu_delete' obj.pk %}" class="btn btn-outline-danger" title="Hamos"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="fas fa-box-open fa-3x mb-3 d-block"></i>
+                                <p class="mb-0">Laiha produtu</p>
+                                <a href="{% url 'dashboard:produtu_create' %}" class="btn btn-primary btn-sm mt-2">Kria produtu foun</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-muted small">
+        Total: <strong>{{ object_list|length }}</strong> produtu
     </div>
 </div>
 {% endblock %}

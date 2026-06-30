@@ -7,7 +7,7 @@
     <div class="container px-4 px-lg-5">
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Pájina Inisial</a></li>
                 <li class="breadcrumb-item"><a href="{% url 'order_history' %}" class="text-decoration-none">Historia Pedidu</a></li>
                 <li class="breadcrumb-item active">Pedidu #{{ pedidu.id }}</li>
             </ol>
@@ -34,7 +34,7 @@
                                         <td class="fw-bold">${{ detallu.subtotal }}</td>
                                     </tr>
                                 {% empty %}
-                                    <tr><td colspan="3" class="text-muted">No items</td></tr>
+                                    <tr><td colspan="3" class="text-muted">Laiha item</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -46,14 +46,14 @@
                     <h5 class="mb-3"><i class="bi-info-circle me-2"></i>Informasaun Pedidu</h5>
                     <hr>
                     <dl class="row mb-0">
-                        <dt class="col-sm-5 text-muted small">Status</dt>
-                        <dd class="col-sm-7"><span class="order-status {{ pedidu.estado }}">{{ pedidu.get_estado_display }}</span></dd>
-                        <dt class="col-sm-5 text-muted small">Total</dt>
+                        <dt class="col-sm-5 text-muted small">Estadu</dt>
+                        <dd class="col-sm-7"><span class="order-status {{ pedidu.status }}">{{ pedidu.get_status_display }}</span></dd>
+                        <dt class="col-sm-5 text-muted small">Totál</dt>
                         <dd class="col-sm-7 fw-bold">${{ pedidu.total }}</dd>
                         <dt class="col-sm-5 text-muted small">Data</dt>
                         <dd class="col-sm-7">{{ pedidu.created_at|date:"d/m/Y H:i" }}</dd>
-                        <dt class="col-sm-5 text-muted small">Endereco</dt>
-                        <dd class="col-sm-7">{{ pedidu.endeereco_entrega }}</dd>
+                        <dt class="col-sm-5 text-muted small">Enderesu</dt>
+                        <dd class="col-sm-7">{{ pedidu.enderesu }}</dd>
                     </dl>
                     <hr>
                     <a href="{% url 'order_history' %}" class="btn-outline-store w-100 justify-content-center">

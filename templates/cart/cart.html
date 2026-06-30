@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}Kareta - Inope Store{% endblock %}
-
 {% block content %}
 <section class="py-5">
     <div class="container px-4 px-lg-5">
@@ -25,19 +23,29 @@
                                     <tr>
                                         <td data-label="Produtu">
                                             <div class="d-flex align-items-center gap-3">
-                                                {% if item.produtu.imagem %}
-                                                    <img src="{{ item.produtu.imagem.url }}" alt="{{ item.produtu.naran }}" width="50" height="50" style="object-fit:cover; border-radius:0.5rem;">
-                                                {% endif %}
+                                                {% with featured=item.produtu.get_featured_image %}
+                                                    {% if featured %}
+                                                        <img src="{{ featured.image.url }}" alt="{{ item.produtu.naran }}" width="50" height="50" style="object-fit:cover; border-radius:0.5rem;">
+                                                    {% endif %}
+                                                {% endwith %}
                                                 <div>
                                                     <div class="fw-semibold">{{ item.produtu.naran }}</div>
-                                                    <small class="text-muted">${{ item.produtu.preco }} each</small>
+                                                    <small class="text-muted">${{ item.produtu.presu }} ida-idak</small>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td data-label="Kantidade">{{ item.kantidade }}</td>
+                                        <td data-label="Kantidade">
+                                            <form method="post" action="{% url 'karetaatualiza' %}" class="d-flex align-items-center gap-1" style="max-width:130px;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="produtu_id" value="{{ item.produtu.id }}">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary qty-minus" style="border-radius:50%;width:32px;height:32px;padding:0;">−</button>
+                                                <input type="number" name="kantidade" value="{{ item.kantidade }}" min="1" class="form-control form-control-sm text-center" style="width:50px;border-radius:0.5rem;">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary qty-plus" style="border-radius:50%;width:32px;height:32px;padding:0;">+</button>
+                                            </form>
+                                        </td>
                                         <td data-label="Subtotal" class="fw-bold">${{ item.subtotal }}</td>
                                         <td data-label="Aksaun" class="text-end">
-                                            <a href="{% url 'cart_remove' item.produtu.id %}" class="btn-danger-store btn-sm">
+                                            <a href="{% url 'karetahamos' item.produtu.id %}" class="btn-danger-store btn-sm" onclick="return confirm('Hamos {{ item.produtu.naran }} husi kareta?')">
                                                 <i class="bi-trash"></i>Hamos
                                             </a>
                                         </td>
@@ -52,7 +60,7 @@
                         <h5 class="mb-3">Resumu Pedidu</h5>
                         <hr>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted">Total Item</span>
+                            <span class="text-muted">Total Sasan</span>
                             <span>{{ items|length }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -61,11 +69,11 @@
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <strong style="font-size:1.1rem;">Total</strong>
+                            <strong style="font-size:1.1rem;">Totál</strong>
                             <strong style="font-size:1.1rem;color:var(--accent);">${{ total }}</strong>
                         </div>
                         <a href="{% url 'checkout' %}" class="btn-accent w-100 mb-2 justify-content-center">
-                            <i class="bi-box-arrow-right"></i>Checkout
+                            <i class="bi-box-arrow-right"></i>Selu Agora
                         </a>
                         <a href="{% url 'home' %}" class="btn-outline-store w-100 justify-content-center">
                             <i class="bi-arrow-left"></i>Continua Sosa
@@ -85,4 +93,17 @@
         {% endif %}
     </div>
 </section>
+<script>
+document.querySelectorAll('.qty-minus, .qty-plus').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const input = this.closest('form').querySelector('input[name="kantidade"]');
+        let val = parseInt(input.value) || 1;
+        if (this.classList.contains('qty-plus')) val++;
+        else if (val > 1) val--;
+        else return;
+        input.value = val;
+        this.closest('form').submit();
+    });
+});
+</script>
 {% endblock %}

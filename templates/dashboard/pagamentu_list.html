@@ -3,33 +3,76 @@
 {% block page_title %}Pagamentu{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="card-title">Lista Pagamentu</h3>
-        <a href="{% url 'pagamentu_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Foun</a>
+<div class="card card-outline card-primary">
+    <div class="card-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h3 class="card-title mb-0">Lista Pagamentu</h3>
+            <div class="d-flex gap-2">
+                <div class="input-group input-group-sm" style="max-width:260px">
+                    <input type="text" class="form-control table-search" placeholder="Buka...">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+                <a href="{% url 'dashboard:pagamentu_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Foun</a>
+            </div>
+        </div>
     </div>
-    <div class="card-body table-responsive p-0">
-        <table class="table table-hover">
-            <thead><tr><th>ID</th><th>Pedidu</th><th>Metodu</th><th>Total</th><th>Estado</th><th>Data</th><th>Aksaun</th></tr></thead>
-            <tbody>
-                {% for obj in object_list %}
-                <tr>
-                    <td>{{ obj.id }}</td>
-                    <td>#{{ obj.pedidu.id }}</td>
-                    <td>{{ obj.metodu }}</td>
-                    <td>${{ obj.total }}</td>
-                    <td><span class="badge bg-{% if obj.estado == 'pagu' %}success{% elif obj.estado == 'kansela' %}danger{% else %}warning{% endif %}">{{ obj.estado|title }}</span></td>
-                    <td>{{ obj.created_at|date:"d/m/Y H:i" }}</td>
-                    <td>
-                        <a href="{% url 'pagamentu_update' obj.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                        <a href="{% url 'pagamentu_delete' obj.pk %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="7" class="text-center">Laiha pagamentu</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr><th>#</th><th>Pedidu</th><th>Metodu</th><th>Total</th><th>Estado</th><th>Data</th><th class="text-end">Aksaun</th></tr>
+                </thead>
+                <tbody>
+                    {% for obj in object_list %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td><span class="badge bg-secondary">#{{ obj.pedidu.id }}</span></td>
+                        <td>
+                            {% if obj.metodu == 'cod' %}
+                            <span class="badge bg-success"><i class="fas fa-truck me-1"></i>COD</span>
+                            {% elif obj.metodu == 'transfer' %}
+                            <span class="badge bg-info"><i class="fas fa-university me-1"></i>Transferensia</span>
+                            {% elif obj.metodu == 'mbway' %}
+                            <span class="badge bg-primary"><i class="fas fa-mobile-alt me-1"></i>MBWAY</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ obj.metodu }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="fw-semibold">${{ obj.total }}</td>
+                        <td>
+                            {% if obj.status == 'pagu' %}
+                            <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Pagu</span>
+                            {% elif obj.status == 'kansela' %}
+                            <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>Kansela</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pendente</span>
+                            {% endif %}
+                        </td>
+                        <td class="small">{{ obj.created_at|date:"d/m/Y" }}<br><span class="text-muted">{{ obj.created_at|date:"H:i" }}</span></td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'dashboard:pagamentu_update' obj.pk %}" class="btn btn-outline-warning" title="Edita"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'dashboard:pagamentu_delete' obj.pk %}" class="btn btn-outline-danger" title="Hamos"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="fas fa-credit-card fa-3x mb-3 d-block"></i>
+                                <p class="mb-0">Laiha pagamentu</p>
+                                <a href="{% url 'dashboard:pagamentu_create' %}" class="btn btn-primary btn-sm mt-2">Kria pagamentu foun</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-muted small">
+        Total: <strong>{{ object_list|length }}</strong> pagamentu
     </div>
 </div>
 {% endblock %}

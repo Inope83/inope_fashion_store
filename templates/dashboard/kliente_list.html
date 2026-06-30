@@ -3,30 +3,56 @@
 {% block page_title %}Kliente{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="card-title">Lista Kliente</h3>
-        <a href="{% url 'kliente_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Foun</a>
+<div class="card card-outline card-primary">
+    <div class="card-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h3 class="card-title mb-0">Lista Kliente</h3>
+            <div class="d-flex gap-2">
+                <div class="input-group input-group-sm" style="max-width:260px">
+                    <input type="text" class="form-control table-search" placeholder="Buka...">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+                <a href="{% url 'dashboard:kliente_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Foun</a>
+            </div>
+        </div>
     </div>
-    <div class="card-body table-responsive p-0">
-        <table class="table table-hover">
-            <thead><tr><th>ID</th><th>Naran</th><th>Email</th><th>Aksaun</th></tr></thead>
-            <tbody>
-                {% for obj in object_list %}
-                <tr>
-                    <td>{{ obj.id }}</td>
-                    <td>{{ obj.naran }}</td>
-                    <td>{{ obj.email }}</td>
-                    <td>
-                        <a href="{% url 'kliente_update' obj.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                        <a href="{% url 'kliente_delete' obj.pk %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="4" class="text-center">Laiha kliente</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr><th>#</th><th>Naran</th><th>Email</th><th>Staff</th><th class="text-end">Aksaun</th></tr>
+                </thead>
+                <tbody>
+                    {% for obj in object_list %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td class="fw-semibold">{{ obj.naran }}</td>
+                        <td><a href="mailto:{{ obj.email }}" class="text-decoration-none">{{ obj.email }}</a></td>
+                        <td>{% if obj.is_staff %}<span class="badge bg-success"><i class="fas fa-check me-1"></i>Sin</span>{% else %}<span class="badge bg-secondary">Lae</span>{% endif %}</td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'dashboard:kliente_update' obj.pk %}" class="btn btn-outline-warning" title="Edita"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'dashboard:kliente_delete' obj.pk %}" class="btn btn-outline-danger" title="Hamos"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="fas fa-users fa-3x mb-3 d-block"></i>
+                                <p class="mb-0">Laiha kliente</p>
+                                <a href="{% url 'dashboard:kliente_create' %}" class="btn btn-primary btn-sm mt-2">Kria kliente foun</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-muted small">
+        Total: <strong>{{ object_list|length }}</strong> kliente
     </div>
 </div>
 {% endblock %}

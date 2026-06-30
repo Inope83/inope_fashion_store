@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tet">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -21,36 +21,31 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Kategoria</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'produtu_list' %}"><i class="bi-grid me-2"></i>Produtus</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            {% for kategoria in nav_kategorias %}
-<<<<<<< Updated upstream
-                                <li><a class="dropdown-item" href="{% url 'produtu_list' %}?kategoria={{ kategoria.id }}">{{ kategoria.naran }}</a></li>
-=======
-                                <li><a class="dropdown-item" href="#">{{ kategoria.name }}</a></li>
->>>>>>> Stashed changes
-                            {% endfor %}
-                        </ul>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Pájina Inisial</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'produtu_list' %}">Produtus</a></li>
                 </ul>
 
                 <div class="d-flex align-items-center gap-2">
-                    <a class="btn-nav-cart" href="{% url 'cart' %}">
-                        <i class="bi-cart-fill"></i>Cart
+                    <a class="btn-nav-cart" href="{% url 'kareta' %}">
+                        <i class="bi-cart-fill"></i>Kareta
                         <span class="badge-cart">{{ cart_count|default:0 }}</span>
                     </a>
-                    {% if request.session.kliente_id %}
+                    {% if request.user.is_authenticated %}
+                        <a class="btn-nav-user" href="{% url 'perfil' %}">
+                            <i class="bi-person-circle"></i>{{ request.user.email }}
+                        </a>
+                        <form method="post" action="{% url 'user_logout' %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-nav-primary">Sai</button>
+                        </form>
+                    {% elif request.session.kliente_id %}
                         <a class="btn-nav-user" href="{% url 'perfil' %}">
                             <i class="bi-person-circle"></i>{{ request.session.kliente_naran }}
                         </a>
-                        <a class="btn-nav-primary" href="{% url 'logout' %}">Sai</a>
+                        <a class="btn-nav-primary" href="{% url 'kliente_logout' %}">Sai</a>
                     {% else %}
-                        <a class="btn-nav-outline" href="{% url 'login' %}">Login</a>
-                        <a class="btn-nav-primary" href="{% url 'regist' %}">Registu</a>
+                        <a class="btn-nav-outline" href="{% url 'kliente_login' %}">Tama</a>
+                        <a class="btn-nav-primary" href="{% url 'kliente_regist' %}">Registu</a>
                     {% endif %}
                 </div>
             </div>
@@ -72,12 +67,22 @@
 
     <footer class="footer-store">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0 text-white">&copy; {% now "Y" %} <strong>Inope Store</strong>. Hotu reservadu.</p>
+            <div class="row gy-3">
+                <div class="col-md-4">
+                    <p class="mb-1 text-white fw-bold">Inope Store</p>
+                    <p class="mb-0 text-white-50 small">Sasan diak ho presu baratu.</p>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0 text-white-50"><i class="bi-truck me-1"></i>Selu COD (Cash On Delivery)</p>
+                <div class="col-md-4">
+                    <p class="mb-1 text-white-50 small fw-bold">LIGASAUN</p>
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'produtu_list' %}" class="text-white-50 small text-decoration-none">Produtus</a>
+                        <a href="#" class="text-white-50 small text-decoration-none">Kona-ba ami</a>
+                        <a href="#" class="text-white-50 small text-decoration-none">Kontaktu</a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <p class="mb-0 text-white-50 small"><i class="bi-truck me-1"></i>Selu iha fatin (COD)</p>
+                    <p class="mb-0 text-white-50 small"><strong>&copy; {% now "Y" %} Inope Store</strong></p>
                 </div>
             </div>
         </div>

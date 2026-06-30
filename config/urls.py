@@ -8,10 +8,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', views.home_view, name='home'),
-    path('products/', include('apps.products.urls')),
-    path('users/', include('apps.users.urls')),
-    path('cart/', include('apps.cart.urls')),
-    path('orders/', include('apps.orders.urls')),
+    path('home/', views.home_view),
+    path('produtus/', include('apps.products.urls')),
+    path('uzuarius/', include('apps.users.urls')),
+    path('kareta/', include('apps.cart.urls')),
+    path('pedidus/', include('apps.orders.urls')),
     path('dashboard/', include('apps.dashboard.urls')),
 
 ]

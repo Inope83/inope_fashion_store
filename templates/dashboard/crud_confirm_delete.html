@@ -3,15 +3,19 @@
 {% block page_title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card card-outline card-danger">
+    <div class="card-header">
+        <h3 class="card-title mb-0"><i class="fas fa-exclamation-triangle text-danger me-2"></i>{{ title }}</h3>
+    </div>
     <div class="card-body text-center py-5">
-        <h4>Ita boot hakarak hamos {{ object }}?</h4>
-        <p class="text-muted">Asaun ida ne'e la bele fila fali.</p>
+        <i class="fas fa-trash-alt fa-4x text-danger mb-4 d-block"></i>
+        <h4 class="mb-2">Ita boot hakarak hamos {{ object }}?</h4>
+        <p class="text-muted mb-4">Asaun ida ne'e la bele fila fali. Dadus hotu sei lakon permanentemente.</p>
         <form method="post">
             {% csrf_token %}
             <div class="d-flex gap-2 justify-content-center">
-                <button type="submit" class="btn btn-danger">Sim, Hamos</button>
-                <a href="{{ cancel_url }}" class="btn btn-secondary">Kansela</a>
+                <button type="submit" class="btn btn-danger px-4"><i class="fas fa-trash me-1"></i>Sim, Hamos</button>
+                <a href="{{ cancel_url }}" class="btn btn-outline-secondary px-4"><i class="fas fa-times me-1"></i>Kansela</a>
             </div>
         </form>
     </div>
