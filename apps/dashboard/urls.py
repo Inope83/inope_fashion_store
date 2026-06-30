@@ -5,7 +5,8 @@ app_name = 'dashboard'
 
 urlpatterns = [
     path('', views.DashboardHome.as_view(), name='dashboard_home'),
-    path('report/', views.DashboardHome.as_view(template_name='dashboard/report.html'), name='dashboard_report'),
+    path('report/', views.ReportView.as_view(), name='dashboard_report'),
+    path('report/export/csv/', views.report_export_csv, name='dashboard_report_export'),
     path('login/', views.dashboard_login_view, name='dashboard_login'),
     path('logout/', views.dashboard_logout_view, name='dashboard_logout'),
 

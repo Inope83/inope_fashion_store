@@ -3,23 +3,159 @@
 {% block page_title %}Relatoriu{% endblock %}
 
 {% block content %}
+
+<form method="get" class="row g-2 mb-3 align-items-end">
+    <div class="col-auto">
+        <label class="form-label small mb-1">Husi</label>
+        <input type="date" name="start" class="form-control form-control-sm" value="{{ start_date }}">
+    </div>
+    <div class="col-auto">
+        <label class="form-label small mb-1">To'o</label>
+        <input type="date" name="end" class="form-control form-control-sm" value="{{ end_date }}">
+    </div>
+    <div class="col-auto d-flex gap-1">
+        <button type="submit" class="btn btn-primary btn-sm mt-4"><i class="fas fa-filter me-1"></i>Filtru</button>
+        <a href="{% url 'dashboard:dashboard_report' %}" class="btn btn-outline-secondary btn-sm mt-4"><i class="fas fa-undo me-1"></i>Reset</a>
+        <a href="{% url 'dashboard:dashboard_report_export' %}" class="btn btn-success btn-sm mt-4"><i class="fas fa-download me-1"></i>CSV</a>
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ total_pedidu }}</h3>
+                <p>Pedidu</p>
+            </div>
+            <div class="icon"><i class="fas fa-shopping-cart"></i></div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>${{ total_pagamentu|floatformat:2 }}</h3>
+                <p>Receita</p>
+            </div>
+            <div class="icon"><i class="fas fa-dollar-sign"></i></div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ total_kliente }}</h3>
+                <p>Kliente</p>
+            </div>
+            <div class="icon"><i class="fas fa-users"></i></div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ total_produtu }}</h3>
+                <p>Produtu</p>
+            </div>
+            <div class="icon"><i class="fas fa-box"></i></div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header"><h3 class="card-title">Informasaun</h3></div>
+    <div class="col-md-8">
+        <div class="card card-outline card-primary">
+            <div class="card-header"><h3 class="card-title">Receita 7 Loron</h3></div>
             <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-6">Totál Kliente</dt>
-                    <dd class="col-sm-6">{{ total_kliente }}</dd>
-                    <dt class="col-sm-6">Totál Produtu</dt>
-                    <dd class="col-sm-6">{{ total_produtu }}</dd>
-                    <dt class="col-sm-6">Totál Pedidu</dt>
-                    <dd class="col-sm-6">{{ total_pedidu }}</dd>
-                    <dt class="col-sm-6">Totál Receita</dt>
-                    <dd class="col-sm-6">${{ total_receita|floatformat:2 }}</dd>
-                </dl>
+                <canvas id="receitaChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-outline card-primary">
+            <div class="card-header"><h3 class="card-title">Pedidu 7 Loron</h3></div>
+            <div class="card-body">
+                <canvas id="pediduChart" height="200"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card card-outline card-info">
+            <div class="card-header"><h3 class="card-title">Metodu Pagamentu</h3></div>
+            <div class="card-body">
+                <canvas id="pagamentuChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-outline card-info">
+            <div class="card-header"><h3 class="card-title">Top 5 Produtu</h3></div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr><th>#</th><th>Produtu</th><th>Kantidade</th><th>Subtotal</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for p in top_produtus %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ p.produtu__naran }}</td>
+                            <td>{{ p.total_kantidade }}</td>
+                            <td>${{ p.total_subtotal|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-muted text-center">Laiha dadus</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('receitaChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ chart_labels|safe }},
+        datasets: [{
+            label: 'Receita ($)',
+            data: {{ chart_receita|safe }},
+            backgroundColor: 'rgba(40,167,69,0.7)',
+            borderColor: 'rgba(40,167,69,1)',
+            borderWidth: 1
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+});
+new Chart(document.getElementById('pediduChart'), {
+    type: 'line',
+    data: {
+        labels: {{ chart_labels|safe }},
+        datasets: [{
+            label: 'Pedidu',
+            data: {{ chart_pedidu|safe }},
+            backgroundColor: 'rgba(23,162,184,0.2)',
+            borderColor: 'rgba(23,162,184,1)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+});
+new Chart(document.getElementById('pagamentuChart'), {
+    type: 'pie',
+    data: {
+        labels: [{% for m in metodus %}'{{ m.metodu }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for m in metodus %}{{ m.total }}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: ['#28a745','#ffc107','#17a2b8','#dc3545','#6c757d']
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+});
+</script>
 {% endblock %}

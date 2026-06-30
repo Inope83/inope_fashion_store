@@ -1,8 +1,11 @@
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
-from django.db.models import Sum
+from django.db.models import Sum, Count, Q
+from django.db.models.functions import TruncDate
 from django.contrib import messages
+from django.http import HttpResponse
 from apps.products.models import Produtu, Kategoria
 from apps.orders.models import Pedidu, DetalloPedidu, Pagamentu
 from apps.users.models import Kliente, Notifikasaun
@@ -409,6 +412,84 @@ class AdminDelete(DashboardMixin, DeleteView):
     page_title = 'Hamos Administrador'
     cancel_url = reverse_lazy('dashboard:admin_list')
     success_url = reverse_lazy('dashboard:admin_list')
+
+
+# ─── Report ───
+
+class ReportView(AdminRequiredMixin, View):
+    template_name = 'dashboard/report.html'
+
+    def get(self, request):
+        start_date = request.GET.get('start')
+        end_date = request.GET.get('end')
+
+        pedidus = Pedidu.objects.all()
+        pagamentus = Pagamentu.objects.filter(status='pagu')
+
+        if start_date:
+            pedidus = pedidus.filter(created_at__gte=start_date)
+            pagamentus = pagamentus.filter(created_at__gte=start_date)
+        if end_date:
+            pedidus = pedidus.filter(created_at__lte=end_date)
+            pagamentus = pagamentus.filter(created_at__lte=end_date)
+
+        total_pedidu = pedidus.count()
+        total_pagamentu = pagamentus.aggregate(Sum('total'))['total__sum'] or 0
+        total_kliente = Kliente.objects.count()
+        total_produtu = Produtu.objects.count()
+
+        chart_labels = []
+        chart_receita = []
+        chart_pedidu = []
+        daily = pagamentus.annotate(date=TruncDate('created_at')).values('date').annotate(
+            receita=Sum('total'), total_pedidu=Count('id')
+        ).order_by('date')
+        today = datetime.today()
+        for i in range(6, -1, -1):
+            d = (today - timedelta(days=i)).strftime('%Y-%m-%d')
+            chart_labels.append(d)
+            row = daily.filter(date=d).first()
+            chart_receita.append(float(row['receita']) if row else 0)
+            chart_pedidu.append(row['total_pedidu'] if row else 0)
+
+        metodus = pagamentus.values('metodu').annotate(total=Sum('total')).order_by('-total')
+
+        top_produtus = DetalloPedidu.objects.filter(
+            pedidu__in=pedidus
+        ).values('produtu__naran').annotate(
+            total_kantidade=Sum('kantidade'), total_subtotal=Sum('subtotal')
+        ).order_by('-total_subtotal')[:5]
+
+        ctx = {'active': 'report', 'title': 'Relatoriu'}
+        ctx.update({
+            'total_pedidu': total_pedidu,
+            'total_pagamentu': total_pagamentu,
+            'total_kliente': total_kliente,
+            'total_produtu': total_produtu,
+            'chart_labels': chart_labels,
+            'chart_receita': chart_receita,
+            'chart_pedidu': chart_pedidu,
+            'metodus': metodus,
+            'top_produtus': top_produtus,
+            'start_date': start_date or '',
+            'end_date': end_date or '',
+        })
+        return render(request, self.template_name, ctx)
+
+
+def report_export_csv(request):
+    kliente_id = request.session.get('kliente_id')
+    if not kliente_id or not Kliente.objects.filter(id=kliente_id, is_staff=True).exists():
+        return redirect(f"{reverse('kliente_login')}?next={request.path}")
+
+    import csv as csv_mod
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="relatoriu.csv"'
+    writer = csv_mod.writer(response)
+    writer.writerow(['Pedidu ID', 'Kliente', 'Total', 'Status', 'Data'])
+    for p in Pedidu.objects.all().select_related('kliente'):
+        writer.writerow([p.id, p.kliente.naran, p.total, p.get_status_display(), p.created_at])
+    return response
 
 
 # ─── Dashboard Auth ───
